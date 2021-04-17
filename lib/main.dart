@@ -4,9 +4,9 @@ import 'package:acerta_ou_tapa/pagina/game.dart';
 import 'package:acerta_ou_tapa/pagina/login.dart';
 import 'package:flutter/material.dart';
 
-main() => runApp(MainApp());
+main() => runApp(MyApp());
 
-class MainApp extends StatelessWidget {
+class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
