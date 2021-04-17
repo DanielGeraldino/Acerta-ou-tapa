@@ -1,3 +1,4 @@
+import 'package:acerta_ou_tapa/utilities/api_banco.dart';
 import 'package:flutter/material.dart';
 
 class LoginWidget extends StatefulWidget {
@@ -8,6 +9,7 @@ class LoginWidget extends StatefulWidget {
 class _LoginWidgetState extends State<LoginWidget> {
   TextEditingController controllerUsuario;
   TextEditingController controllerSenha;
+  ApiBanco conection;
 
   @override
   void initState() {
@@ -66,7 +68,16 @@ class _LoginWidgetState extends State<LoginWidget> {
                     EdgeInsets.only(left: 30, right: 30, top: 0, bottom: 20),
                 child: ElevatedButton(
                   child: Text('ENTRAR'),
-                  onPressed: () => Navigator.pushNamed(context, '/catalago'),
+                  // onPressed: () => Navigator.pushNamed(context, '/catalago'),
+                  onPressed: () {
+                    //Teste conecção
+                    conection =
+                        ApiBanco(controllerUsuario.text, controllerSenha.text);
+                    conection.setToken();
+                    if (conection.token != null || conection.token != '') {
+                      Navigator.pushNamed(context, '/catalago');
+                    }
+                  },
                 ),
               ),
               Text('Novo jogador? click para criar conta.'),
