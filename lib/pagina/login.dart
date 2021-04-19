@@ -9,7 +9,7 @@ class LoginWidget extends StatefulWidget {
 class _LoginWidgetState extends State<LoginWidget> {
   TextEditingController controllerUsuario;
   TextEditingController controllerSenha;
-  ApiBanco conection;
+  ApiBanco banco;
 
   @override
   void initState() {
@@ -71,10 +71,10 @@ class _LoginWidgetState extends State<LoginWidget> {
                   // onPressed: () => Navigator.pushNamed(context, '/catalago'),
                   onPressed: () {
                     //Teste conecção
-                    conection =
+                    banco =
                         ApiBanco(controllerUsuario.text, controllerSenha.text);
-                    conection.setToken();
-                    if (conection.token != null || conection.token != '') {
+                    banco.setToken();
+                    if (banco.token != null || banco.token != '') {
                       Navigator.pushNamed(context, '/catalago');
                     }
                   },
