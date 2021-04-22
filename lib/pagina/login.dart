@@ -71,10 +71,12 @@ class _LoginWidgetState extends State<LoginWidget> {
                   // onPressed: () => Navigator.pushNamed(context, '/catalago'),
                   onPressed: () {
                     //Teste conecção
-                    banco =
-                        ApiBanco(controllerUsuario.text, controllerSenha.text);
-                    banco.setToken();
-                    if (banco.token != null || banco.token != '') {
+                    if (banco == null) {
+                      banco = ApiBanco(
+                          controllerUsuario.text, controllerSenha.text);
+                      banco.setToken();
+                    }
+                    if (banco.token != null) {
                       Navigator.pushNamed(context, '/catalago');
                     }
                   },
