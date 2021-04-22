@@ -6,12 +6,12 @@ class ApiBanco {
   String _user;
   String _senha;
   String _token;
-  var _url = Uri.parse('https://perguntasocoapi.azurewebsites.net/api/login');
+  final _url = Uri.parse('https://perguntasocoapi.azurewebsites.net/api/login');
 
   ApiBanco(this._user, this._senha);
 
   get user {
-    return this.user;
+    return this._user;
   }
 
   get token {

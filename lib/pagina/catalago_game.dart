@@ -11,8 +11,11 @@ class CatalagoGameWidget extends StatelessWidget {
         ),
         body: ListView(
           children: [
-            CardGameWidget('Jogo 1 - Animes', 'Perguntas sobre animes variados',
-                () => Navigator.pushNamed(context, '/game')),
+            CardGameWidget(
+              'Jogo 1 - Animes',
+              'Perguntas sobre animes variados',
+              () => Navigator.pushNamed(context, '/game'),
+            ),
           ],
         ),
       ),
