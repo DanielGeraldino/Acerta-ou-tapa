@@ -1,6 +1,13 @@
 import 'package:flutter/material.dart';
 
-class GameFinalizaWidget extends StatelessWidget {
+class GameFinalizaWidget extends StatefulWidget {
+  @override
+  _GameFinalizaWidgetState createState() => _GameFinalizaWidgetState();
+}
+
+class _GameFinalizaWidgetState extends State<GameFinalizaWidget> {
+  var _valueSlider = 0.0;
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -8,7 +15,40 @@ class GameFinalizaWidget extends StatelessWidget {
         appBar: AppBar(
           title: Text('Acerta ou tapa na cara'),
         ),
-        body: Text('Tela final do game'),
+        body: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            Text(
+              'Parabens!',
+              style: TextStyle(fontSize: 30),
+            ),
+            Container(
+              child: ElevatedButton(
+                child: Text('PREPARAR'),
+                onPressed: () {},
+              ),
+            ),
+            Column(
+              children: [
+                Text(
+                  'Nível de força do tapinha:',
+                  style: TextStyle(fontSize: 20),
+                ),
+                Slider(
+                  value: _valueSlider,
+                  onChanged: (newValue) {
+                    setState(() {
+                      _valueSlider = newValue;
+                    });
+                  },
+                  label: '${_valueSlider.round()}',
+                  max: 100,
+                  min: 0,
+                )
+              ],
+            )
+          ],
+        ),
       ),
     );
   }

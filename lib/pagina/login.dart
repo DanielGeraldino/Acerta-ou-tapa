@@ -1,5 +1,6 @@
 import 'package:acerta_ou_tapa/utilities/api_banco.dart';
 import 'package:flutter/material.dart';
+import 'package:toast/toast.dart';
 
 class LoginWidget extends StatefulWidget {
   @override
@@ -78,6 +79,8 @@ class _LoginWidgetState extends State<LoginWidget> {
                     }
                     if (banco.token != null) {
                       Navigator.pushNamed(context, '/catalago');
+                    } else {
+                      Toast.show('FAVOR VERIFICAR SENHA', context);
                     }
                   },
                 ),

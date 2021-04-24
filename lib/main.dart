@@ -10,8 +10,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      initialRoute: '/login',
       routes: {
-        '/': (BuildContext context) => LoginWidget(),
+        '/login': (BuildContext context) => LoginWidget(),
         '/catalago': (BuildContext context) => CatalagoGameWidget(),
         '/game': (BuildContext context) => GameWidget(),
         '/game_final': (BuildContext context) => GameFinalizaWidget(),

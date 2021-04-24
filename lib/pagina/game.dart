@@ -61,6 +61,7 @@ class _GameWidgetState extends State<GameWidget> {
                     '${pergunta.possivelRespota[selecionado]}',
                     context,
                   );
+                  Navigator.pushNamed(context, '/game_final');
                 },
               ),
             ),
