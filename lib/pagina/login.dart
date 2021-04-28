@@ -69,16 +69,17 @@ class _LoginWidgetState extends State<LoginWidget> {
                     EdgeInsets.only(left: 30, right: 30, top: 0, bottom: 20),
                 child: ElevatedButton(
                   child: Text('ENTRAR'),
-                  // onPressed: () => Navigator.pushNamed(context, '/catalago'),
-                  onPressed: () {
+                  onPressed: () async {
                     //Teste conecção
-                    if (banco == null) {
-                      banco = ApiBanco(
-                          controllerUsuario.text, controllerSenha.text);
-                      banco.setToken();
-                    }
-                    if (banco.token != null) {
-                      Navigator.pushNamed(context, '/catalago');
+                    banco =
+                        ApiBanco(controllerUsuario.text, controllerSenha.text);
+                    await banco.setToken();
+                    if (banco.status) {
+                      Navigator.pushNamed(
+                        context,
+                        '/catalago',
+                        arguments: banco,
+                      );
                     } else {
                       Toast.show('FAVOR VERIFICAR SENHA', context);
                     }

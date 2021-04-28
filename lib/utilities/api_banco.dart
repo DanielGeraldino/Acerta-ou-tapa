@@ -6,6 +6,7 @@ class ApiBanco {
   String _user;
   String _senha;
   String _token;
+  bool status = false;
   final _url = Uri.parse('https://perguntasocoapi.azurewebsites.net/api/login');
 
   ApiBanco(this._user, this._senha);
@@ -32,10 +33,16 @@ class ApiBanco {
       if (uriReponse.statusCode == 200) {
         var dado = json.decode(uriReponse.body);
         this._token = dado['description'];
-        print(this.token);
+        this.status = dado['status'];
+        print(this.status);
       }
     } finally {
       client.close();
     }
   }
 }
+
+// main() {
+//   var teste = ApiBanco('admin', 'admin123456');
+//   teste.setToken();
+// }
