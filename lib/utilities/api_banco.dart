@@ -3,20 +3,34 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class ApiBanco {
-  String _user;
+  String _usuario;
   String _senha;
   String _token;
   bool status = false;
   final _url = Uri.parse('https://perguntasocoapi.azurewebsites.net/api/login');
 
-  ApiBanco(this._user, this._senha);
+  ApiBanco(this._usuario, this._senha);
 
   get user {
-    return this._user;
+    return this._usuario;
+  }
+
+  set usuario(String usuario) {
+    _usuario = user;
+  }
+
+  set senha(String senha) {
+    _senha = senha;
   }
 
   get token {
     return this._token;
+  }
+
+  void logout() {
+    this.status = false;
+    this.usuario = '';
+    this.senha = '';
   }
 
   Future<void> setToken() async {
@@ -24,7 +38,7 @@ class ApiBanco {
     try {
       var uriReponse = await client.post(this._url,
           body: jsonEncode(<String, String>{
-            "Username": "$_user",
+            "Username": "$_usuario",
             "Password": "$_senha",
           }),
           headers: <String, String>{
