@@ -26,33 +26,32 @@ class _CatalagoGameWidgetState extends State<CatalagoGameWidget> {
     atualizaCategorias(banco);
     return MaterialApp(
       home: Scaffold(
-        appBar: AppBar(
-          title: Text('Acerta ou leva tapa'),
-          actions: [
-            IconButton(
-                icon: Icon(Icons.exit_to_app),
-                onPressed: () {
-                  banco.logout();
-                  Navigator.pop(context, true);
-                })
-          ],
-        ),
-        body: ListView(
-          children: [
-            categorias.forEach(
-              (element) {
-                CardGameWidget(
-                  element["nome"],
-                  element["descricao"],
-                  () {
-                    Navigator.pushNamed(context, '/game');
-                  },
-                );
-              },
-            ),
-          ],
-        ),
-      ),
+          appBar: AppBar(
+            title: Text('Acerta ou leva tapa'),
+            actions: [
+              IconButton(
+                  icon: Icon(Icons.exit_to_app),
+                  onPressed: () {
+                    banco.logout();
+                    Navigator.pop(context, true);
+                  })
+            ],
+          ),
+          body: ListView(
+            children: [
+              for (var i in categorias)
+                if (i['nome'] != null && i['descricao'] != null)
+                  CardGameWidget(
+                    i['nome'],
+                    i['descricao'],
+                    () => Navigator.pushNamed(
+                      context,
+                      '/game',
+                      arguments: i['idCategoria'],
+                    ),
+                  ),
+            ],
+          )),
     );
   }
 }
