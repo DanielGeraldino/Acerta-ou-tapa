@@ -10,45 +10,44 @@ class _GameFinalizaWidgetState extends State<GameFinalizaWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text('Acerta ou tapa na cara'),
-        ),
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            Text(
-              'Parabens!',
-              style: TextStyle(fontSize: 30),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Acerta ou tapa na cara'),
+        automaticallyImplyLeading: false,
+      ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          Text(
+            'Parabens!',
+            style: TextStyle(fontSize: 30),
+          ),
+          Container(
+            child: ElevatedButton(
+              child: Text('PREPARAR'),
+              onPressed: () {},
             ),
-            Container(
-              child: ElevatedButton(
-                child: Text('PREPARAR'),
-                onPressed: () {},
+          ),
+          Column(
+            children: [
+              Text(
+                'Nível de força do tapinha:',
+                style: TextStyle(fontSize: 20),
               ),
-            ),
-            Column(
-              children: [
-                Text(
-                  'Nível de força do tapinha:',
-                  style: TextStyle(fontSize: 20),
-                ),
-                Slider(
-                  value: _valueSlider,
-                  onChanged: (newValue) {
-                    setState(() {
-                      _valueSlider = newValue;
-                    });
-                  },
-                  label: '${_valueSlider.round()}',
-                  max: 100,
-                  min: 0,
-                )
-              ],
-            )
-          ],
-        ),
+              Slider(
+                value: _valueSlider,
+                onChanged: (newValue) {
+                  setState(() {
+                    _valueSlider = newValue;
+                  });
+                },
+                label: '${_valueSlider.round()}',
+                max: 100,
+                min: 0,
+              )
+            ],
+          )
+        ],
       ),
     );
   }

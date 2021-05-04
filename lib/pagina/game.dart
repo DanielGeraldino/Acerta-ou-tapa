@@ -23,50 +23,49 @@ class _GameWidgetState extends State<GameWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text('Acerta ou leva tapa'),
-        ),
-        body: Column(
-          children: [
-            Text(
-              pergunta.titulo,
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Acerta ou leva tapa'),
+        automaticallyImplyLeading: false,
+      ),
+      body: Column(
+        children: [
+          Text(
+            pergunta.titulo,
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
             ),
-            for (int i = 0; i < 4; i++)
-              Row(
-                children: [
-                  Radio(
-                    value: i,
-                    groupValue: selecionado,
-                    onChanged: (resp) {
-                      setState(() {
-                        selecionado = resp;
-                      });
-                    },
-                  ),
-                  Text(pergunta.possivelRespota[i]),
-                ],
-              ),
-            Container(
-              margin: EdgeInsets.only(left: 30, right: 30, top: 0, bottom: 20),
-              child: ElevatedButton(
-                child: Text('PROXIMO'),
-                onPressed: () {
-                  Toast.show(
-                    '${pergunta.possivelRespota[selecionado]}',
-                    context,
-                  );
-                  Navigator.pushNamed(context, '/game_final');
-                },
-              ),
+          ),
+          for (int i = 0; i < 4; i++)
+            Row(
+              children: [
+                Radio(
+                  value: i,
+                  groupValue: selecionado,
+                  onChanged: (resp) {
+                    setState(() {
+                      selecionado = resp;
+                    });
+                  },
+                ),
+                Text(pergunta.possivelRespota[i]),
+              ],
             ),
-          ],
-        ),
+          Container(
+            margin: EdgeInsets.only(left: 30, right: 30, top: 0, bottom: 20),
+            child: ElevatedButton(
+              child: Text('PROXIMO'),
+              onPressed: () {
+                Toast.show(
+                  '${pergunta.possivelRespota[selecionado]}',
+                  context,
+                );
+                Navigator.pushNamed(context, '/game_final');
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
