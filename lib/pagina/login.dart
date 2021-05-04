@@ -10,7 +10,6 @@ class LoginWidget extends StatefulWidget {
 class _LoginWidgetState extends State<LoginWidget> {
   TextEditingController controllerUsuario;
   TextEditingController controllerSenha;
-  ApiBanco banco;
 
   @override
   void initState() {
@@ -30,65 +29,60 @@ class _LoginWidgetState extends State<LoginWidget> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-          backgroundColor: Colors.white,
-          body: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Image.asset(
-                'images/logo.jpg',
-                height: 150,
-              ),
-              Container(
-                margin:
-                    EdgeInsets.only(left: 30, right: 30, top: 20, bottom: 20),
-                child: TextFormField(
-                  decoration: const InputDecoration(
-                    icon: Icon(Icons.person),
-                    hintText: 'Digite seu usuario',
-                    labelText: 'Digite seu usuario',
-                  ),
-                  controller: controllerUsuario,
+        backgroundColor: Colors.white,
+        body: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Image.asset(
+              'images/logo.jpg',
+              height: 150,
+            ),
+            Container(
+              margin: EdgeInsets.only(left: 30, right: 30, top: 20, bottom: 20),
+              child: TextFormField(
+                decoration: const InputDecoration(
+                  icon: Icon(Icons.person_rounded),
+                  hintText: 'Digite seu usuario',
+                  labelText: 'Digite seu usuario',
                 ),
+                controller: controllerUsuario,
               ),
-              Container(
-                margin:
-                    EdgeInsets.only(left: 30, right: 30, top: 0, bottom: 20),
-                child: TextFormField(
-                  decoration: const InputDecoration(
-                    icon: Icon(Icons.lock_open),
-                    hintText: 'Digite sua senha',
-                    labelText: 'Digite sua senha',
-                  ),
-                  controller: controllerSenha,
-                  obscureText: true,
+            ),
+            Container(
+              margin: EdgeInsets.only(left: 30, right: 30, top: 0, bottom: 20),
+              child: TextFormField(
+                decoration: const InputDecoration(
+                  icon: Icon(Icons.lock_clock),
+                  hintText: 'Digite sua senha',
+                  labelText: 'Digite sua senha',
                 ),
+                controller: controllerSenha,
+                obscureText: true,
               ),
-              Container(
-                margin:
-                    EdgeInsets.only(left: 30, right: 30, top: 0, bottom: 20),
-                child: ElevatedButton(
-                  child: Text('ENTRAR'),
-                  onPressed: () async {
-                    //Teste conecção
-                    banco =
-                        ApiBanco(controllerUsuario.text, controllerSenha.text);
-                    await banco.setToken();
-                    if (banco.status) {
-                      Navigator.pushNamed(
-                        context,
-                        '/catalago',
-                        arguments: banco,
-                      );
-                    } else {
-                      Toast.show('FAVOR VERIFICAR SENHA', context);
-                    }
-                  },
-                ),
+            ),
+            Container(
+              margin: EdgeInsets.only(left: 30, right: 30, top: 0, bottom: 20),
+              child: ElevatedButton(
+                child: Text('ENTRAR'),
+                onPressed: () async {
+                  //Teste conecção
+                  ApiBanco.setUsuario(controllerUsuario.text);
+                  ApiBanco.setSenha(controllerSenha.text);
+                  await ApiBanco.setToken();
+                  if (ApiBanco.status) {
+                    print(ApiBanco.getToken());
+                    Navigator.pushNamed(context, '/catalago');
+                  } else {
+                    Toast.show('FAVOR VERIFICAR SENHA', context);
+                  }
+                },
               ),
-              Text('Novo jogador? click para criar conta.'),
-            ],
-          )),
+            ),
+            Text('Novo jogador? click para criar conta.'),
+          ],
+        ),
+      ),
     );
   }
 }

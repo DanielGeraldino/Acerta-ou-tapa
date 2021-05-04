@@ -13,17 +13,17 @@ class _CatalagoGameWidgetState extends State<CatalagoGameWidget> {
   // pega argumento da tela de login
   List categorias = [];
 
-  void atualizaCategorias(ApiBanco banco) async {
-    var aux = await banco.getCategorias();
+  void atualizaCategorias() async {
+    var auxCat = await ApiBanco.getCategorias();
     setState(() {
-      categorias = aux;
+      categorias = auxCat;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    var banco = ModalRoute.of(context).settings.arguments as ApiBanco;
-    atualizaCategorias(banco);
+    // var banco = ModalRoute.of(context).settings.arguments as ApiBanco;
+    atualizaCategorias();
     return MaterialApp(
       home: Scaffold(
           appBar: AppBar(
@@ -32,7 +32,7 @@ class _CatalagoGameWidgetState extends State<CatalagoGameWidget> {
               IconButton(
                   icon: Icon(Icons.exit_to_app),
                   onPressed: () {
-                    banco.logout();
+                    ApiBanco.logout();
                     Navigator.pop(context, true);
                   })
             ],
