@@ -1,5 +1,6 @@
 import 'package:acerta_ou_tapa/model/pergunta.dart';
 import 'package:acerta_ou_tapa/model/resposta.dart';
+import 'package:acerta_ou_tapa/utilities/alertDialogGame.dart';
 import 'package:acerta_ou_tapa/utilities/api_banco.dart';
 import 'package:acerta_ou_tapa/utilities/radio_resposta.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +14,7 @@ class GameWidget extends StatefulWidget {
 class _GameWidgetState extends State<GameWidget> {
   var _perguntas = [];
   Pergunta _perguntaAtual = null;
+  var _qtdAcertos = 0;
 
   var opcaoSelecionado = 0;
 
@@ -41,11 +43,6 @@ class _GameWidgetState extends State<GameWidget> {
       );
       _perguntas.add(_perguntaAtual);
     });
-  }
-
-  @override
-  void initState() {
-    super.initState();
   }
 
   @override
@@ -93,12 +90,17 @@ class _GameWidgetState extends State<GameWidget> {
                   child: ElevatedButton(
                     child: Text('PROXIMO'),
                     onPressed: () {
+                      if (_perguntaAtual.idPeguntaSelecionada ==
+                          _perguntaAtual.idOpacaoCorreta) _qtdAcertos++;
                       if (_perguntas.length == 5) {
-                        for (Pergunta p in _perguntas) {
-                          print(
-                              'Selecionado: ${p.idPeguntaSelecionada} - resposta: ${p.idOpacaoCorreta}');
-                        }
-                        Navigator.pushNamed(context, '/game_final');
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext builder) {
+                              return AlertDialogGame(
+                                content: Text(
+                                    'Você acertou ${(_qtdAcertos / 5) * 100}% das perguntas!'),
+                              );
+                            });
                       } else {
                         proximaPegunta(_idCategoria);
                       }
