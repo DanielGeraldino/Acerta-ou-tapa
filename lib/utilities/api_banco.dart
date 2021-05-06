@@ -77,11 +77,31 @@ class ApiBanco {
       client.close();
     }
   }
+
+  static Future<List> getPergunta(int idCategoria) async {
+    var client = http.Client();
+    try {
+      var uriReponse = await client.get(
+        _getUri('pergunta?idCategoria=$idCategoria'),
+        headers: <String, String>{
+          'Authorization': 'Bearer $_token',
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+      );
+      if (uriReponse.statusCode == 200) {
+        var dado = json.decode(uriReponse.body);
+        return dado['objectsReturn'];
+      }
+      return null;
+    } finally {
+      client.close();
+    }
+  }
 }
 
-// main() async {
-//   var teste = ApiBanco('Admin', 'Admin123');
-//   await teste.setToken();
-//   var perguntas = await teste.getCategorias();
-//   print(perguntas[0]);
-// }
+main() async {
+  ApiBanco.setUsuario('admin');
+  ApiBanco.setSenha('admin123');
+  var teste = await ApiBanco.getPergunta(1) as List;
+  print(teste[0]['listaOpcoes']);
+}

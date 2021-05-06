@@ -18,11 +18,6 @@ class TapaNaCara extends StatelessWidget {
         '/game': (BuildContext context) => GameWidget(),
         '/game_final': (BuildContext context) => GameFinalizaWidget(),
       },
-      onGenerateRoute: (settings) {
-        if (settings.name == '/catalago') {
-          print('teste 222');
-        }
-      },
     );
   }
 }

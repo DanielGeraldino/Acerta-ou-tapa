@@ -10,7 +10,6 @@ class CatalagoGameWidget extends StatefulWidget {
 }
 
 class _CatalagoGameWidgetState extends State<CatalagoGameWidget> {
-  // pega argumento da tela de login
   List categorias = [];
 
   void atualizaCategorias() async {
@@ -22,7 +21,6 @@ class _CatalagoGameWidgetState extends State<CatalagoGameWidget> {
 
   @override
   Widget build(BuildContext context) {
-    // var banco = ModalRoute.of(context).settings.arguments as ApiBanco;
     atualizaCategorias();
     return Scaffold(
       appBar: AppBar(
@@ -47,7 +45,7 @@ class _CatalagoGameWidgetState extends State<CatalagoGameWidget> {
                 () => Navigator.pushNamed(
                   context,
                   '/game',
-                  arguments: i['idCategoria'],
+                  arguments: i['idCategoria'] as int,
                 ),
               ),
         ],

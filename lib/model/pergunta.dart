@@ -1,27 +1,19 @@
+import 'package:acerta_ou_tapa/model/resposta.dart';
+import 'package:flutter/cupertino.dart';
+
 class Pergunta {
-  String _titulo;
-  int _resposta;
-  List<String> _possiveisRespostas;
+  final enuciado;
+  final idEnuciado;
+  final idCategoria;
+  final idOpacaoCorreta;
+  int idPeguntaSelecionada;
+  List<Resposta> respostas;
 
-  Pergunta(this._titulo, this._resposta, this._possiveisRespostas);
-
-  set titulo(String titulo) {
-    this._titulo = titulo;
-  }
-
-  get titulo {
-    return this._titulo;
-  }
-
-  get resposta {
-    return this._resposta;
-  }
-
-  set possivelRespota(List<String> r) {
-    this._possiveisRespostas = r;
-  }
-
-  get possivelRespota {
-    return this._possiveisRespostas;
-  }
+  Pergunta({
+    @required this.enuciado,
+    @required this.idEnuciado,
+    @required this.idCategoria,
+    @required this.idOpacaoCorreta,
+    @required this.respostas,
+  });
 }
