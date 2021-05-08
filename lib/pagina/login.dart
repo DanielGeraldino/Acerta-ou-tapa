@@ -71,7 +71,6 @@ class _LoginWidgetState extends State<LoginWidget> {
                   ApiBanco.setSenha(controllerSenha.text);
                   await ApiBanco.setToken();
                   if (ApiBanco.status) {
-                    print(ApiBanco.getToken());
                     Navigator.pushNamed(context, '/catalago');
                   } else {
                     Toast.show('FAVOR VERIFICAR SENHA', context);

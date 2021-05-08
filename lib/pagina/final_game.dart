@@ -10,6 +10,7 @@ class _GameFinalizaWidgetState extends State<GameFinalizaWidget> {
 
   @override
   Widget build(BuildContext context) {
+    var pergAcertou = ModalRoute.of(context).settings.arguments as bool;
     return Scaffold(
       appBar: AppBar(
         title: Text('Acerta ou tapa na cara'),
@@ -25,7 +26,11 @@ class _GameFinalizaWidgetState extends State<GameFinalizaWidget> {
           Container(
             child: ElevatedButton(
               child: Text('PREPARAR'),
-              onPressed: () {},
+              onPressed: () {
+                // to-do: se acerta prepara a amofada, se não leva o tapa
+                print(pergAcertou);
+                Navigator.pop(context);
+              },
             ),
           ),
           Column(

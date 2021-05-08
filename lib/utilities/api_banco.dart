@@ -97,11 +97,36 @@ class ApiBanco {
       client.close();
     }
   }
+
+  static Future<bool> validarRespota(int idEnuciado, int idOpacao) async {
+    var client = http.Client();
+    try {
+      var uriReponse = await client.post(
+        _getUri('pergunta'),
+        body: jsonEncode({
+          "idEnunciado": idEnuciado,
+          "idOpcao": idOpacao,
+        }),
+        headers: <String, String>{
+          'Authorization': 'Bearer $_token',
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+      );
+      if (uriReponse.statusCode == 200) {
+        var dado = json.decode(uriReponse.body);
+        return dado['objectsReturn'];
+      }
+      return false;
+    } finally {
+      client.close();
+    }
+  }
 }
 
-main() async {
-  ApiBanco.setUsuario('admin');
-  ApiBanco.setSenha('admin123');
-  var teste = await ApiBanco.getPergunta(1) as List;
-  print(teste[0]['listaOpcoes']);
-}
+// main() async {
+//   ApiBanco.setUsuario('admin');
+//   ApiBanco.setSenha('admin123');
+//   await ApiBanco.setToken();
+//   var correta = await ApiBanco.validarRespota(10, 100);
+//   print(correta);
+// }

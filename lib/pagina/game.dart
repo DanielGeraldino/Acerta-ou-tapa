@@ -13,7 +13,7 @@ class GameWidget extends StatefulWidget {
 
 class _GameWidgetState extends State<GameWidget> {
   var _perguntas = [];
-  Pergunta _perguntaAtual = null;
+  Pergunta _perguntaAtual;
   var _qtdAcertos = 0;
 
   var opcaoSelecionado = 0;
@@ -46,6 +46,12 @@ class _GameWidgetState extends State<GameWidget> {
   }
 
   @override
+  void dispose() {
+    print('foi');
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     var _idCategoria = ModalRoute.of(context).settings.arguments;
     return Scaffold(
@@ -72,8 +78,7 @@ class _GameWidgetState extends State<GameWidget> {
                         child: RadioResposta(
                           value: _perguntaAtual.respostas[i].idOpacao,
                           groupValue: opcaoSelecionado,
-                          title:
-                              '${_perguntaAtual.respostas[i].idOpacao} - ${_perguntaAtual.respostas[i].descricao}',
+                          title: '${_perguntaAtual.respostas[i].descricao}',
                           onChanged: (resp) {
                             setState(() {
                               opcaoSelecionado = resp;
@@ -88,21 +93,46 @@ class _GameWidgetState extends State<GameWidget> {
                   margin:
                       EdgeInsets.only(left: 30, right: 30, top: 0, bottom: 20),
                   child: ElevatedButton(
-                    child: Text('PROXIMO'),
-                    onPressed: () {
-                      if (_perguntaAtual.idPeguntaSelecionada ==
-                          _perguntaAtual.idOpacaoCorreta) _qtdAcertos++;
+                    child: Text('ENVIAR RESPOSTA'),
+                    onPressed: () async {
                       if (_perguntas.length == 5) {
                         showDialog(
-                            context: context,
-                            builder: (BuildContext builder) {
-                              return AlertDialogGame(
-                                content: Text(
-                                    'Você acertou ${(_qtdAcertos / 5) * 100}% das perguntas!'),
-                              );
-                            });
+                          context: context,
+                          builder: (BuildContext builder) {
+                            return AlertDialogGame(
+                              content: Text('Você chegou ao final do game!'),
+                              onPressed: () => Navigator.popUntil(
+                                context,
+                                ModalRoute.withName('/catalago'),
+                              ),
+                            );
+                          },
+                        );
                       } else {
-                        proximaPegunta(_idCategoria);
+                        var acertou = await ApiBanco.validarRespota(
+                            _perguntaAtual.idEnuciado,
+                            _perguntaAtual.idPeguntaSelecionada);
+                        var textAcertou = acertou
+                            ? 'Você acertou esta questão!'
+                            : 'Você errou a questão';
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext builder) {
+                            return AlertDialogGame(
+                              content: Text(
+                                textAcertou,
+                              ),
+                              onPressed: () {
+                                Navigator.popAndPushNamed(
+                                  context,
+                                  '/game_final',
+                                  arguments: acertou,
+                                );
+                                proximaPegunta(_idCategoria);
+                              },
+                            );
+                          },
+                        );
                       }
                     },
                   ),
@@ -116,11 +146,7 @@ class _GameWidgetState extends State<GameWidget> {
                 child: ElevatedButton(
                   child: Text('INICIAR'),
                   onPressed: () {
-                    if (_perguntas.length == 5) {
-                      Navigator.pushNamed(context, '/game_final');
-                    } else {
-                      proximaPegunta(_idCategoria);
-                    }
+                    proximaPegunta(_idCategoria);
                   },
                 ),
               ),
