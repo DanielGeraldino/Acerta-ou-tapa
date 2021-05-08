@@ -60,84 +60,89 @@ class _GameWidgetState extends State<GameWidget> {
         automaticallyImplyLeading: false,
       ),
       body: _perguntaAtual != null
-          ? Column(
-              children: [
-                Text(
-                  _perguntaAtual.enuciado,
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
+          ? Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: ListView(
+                children: [
+                  Text(
+                    _perguntaAtual.enuciado,
+                    textAlign: TextAlign.justify,
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-                Padding(
-                    padding: EdgeInsets.symmetric(vertical: 15, horizontal: 0)),
-                for (int i = 0; i < _perguntaAtual.respostas.length; i++)
-                  Row(
-                    children: [
-                      Expanded(
-                        child: RadioResposta(
-                          value: _perguntaAtual.respostas[i].idOpacao,
-                          groupValue: opcaoSelecionado,
-                          title: '${_perguntaAtual.respostas[i].descricao}',
-                          onChanged: (resp) {
-                            setState(() {
-                              opcaoSelecionado = resp;
-                              _perguntaAtual.idPeguntaSelecionada = resp;
-                            });
-                          },
+                  Padding(
+                      padding:
+                          EdgeInsets.symmetric(vertical: 15, horizontal: 0)),
+                  for (int i = 0; i < _perguntaAtual.respostas.length; i++)
+                    Row(
+                      children: [
+                        Expanded(
+                          child: RadioResposta(
+                            value: _perguntaAtual.respostas[i].idOpacao,
+                            groupValue: opcaoSelecionado,
+                            title: '${_perguntaAtual.respostas[i].descricao}',
+                            onChanged: (resp) {
+                              setState(() {
+                                opcaoSelecionado = resp;
+                                _perguntaAtual.idPeguntaSelecionada = resp;
+                              });
+                            },
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                Container(
-                  margin:
-                      EdgeInsets.only(left: 30, right: 30, top: 0, bottom: 20),
-                  child: ElevatedButton(
-                    child: Text('ENVIAR RESPOSTA'),
-                    onPressed: () async {
-                      if (_perguntas.length == 5) {
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext builder) {
-                            return AlertDialogGame(
-                              content: Text('Você chegou ao final do game!'),
-                              onPressed: () => Navigator.popUntil(
-                                context,
-                                ModalRoute.withName('/catalago'),
-                              ),
-                            );
-                          },
-                        );
-                      } else {
-                        var acertou = await ApiBanco.validarRespota(
-                            _perguntaAtual.idEnuciado,
-                            _perguntaAtual.idPeguntaSelecionada);
-                        var textAcertou = acertou
-                            ? 'Você acertou esta questão!'
-                            : 'Você errou a questão';
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext builder) {
-                            return AlertDialogGame(
-                              content: Text(
-                                textAcertou,
-                              ),
-                              onPressed: () {
-                                Navigator.popAndPushNamed(
+                      ],
+                    ),
+                  Container(
+                    margin: EdgeInsets.only(
+                        left: 30, right: 30, top: 0, bottom: 20),
+                    child: ElevatedButton(
+                      child: Text('ENVIAR RESPOSTA'),
+                      onPressed: () async {
+                        if (_perguntas.length == 5) {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext builder) {
+                              return AlertDialogGame(
+                                content: Text('Você chegou ao final do game!'),
+                                onPressed: () => Navigator.popUntil(
                                   context,
-                                  '/game_final',
-                                  arguments: acertou,
-                                );
-                                proximaPegunta(_idCategoria);
-                              },
-                            );
-                          },
-                        );
-                      }
-                    },
+                                  ModalRoute.withName('/catalago'),
+                                ),
+                              );
+                            },
+                          );
+                        } else {
+                          var acertou = await ApiBanco.validarRespota(
+                              _perguntaAtual.idEnuciado,
+                              _perguntaAtual.idPeguntaSelecionada);
+                          var textAcertou = acertou
+                              ? 'Você acertou esta questão!'
+                              : 'Você errou a questão';
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext builder) {
+                              return AlertDialogGame(
+                                content: Text(
+                                  textAcertou,
+                                ),
+                                onPressed: () {
+                                  Navigator.popAndPushNamed(
+                                    context,
+                                    '/game_final',
+                                    arguments: acertou,
+                                  );
+                                  proximaPegunta(_idCategoria);
+                                },
+                              );
+                            },
+                          );
+                        }
+                      },
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             )
           : Center(
               child: Container(
