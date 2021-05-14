@@ -31,7 +31,10 @@ class _CatalagoGameWidgetState extends State<CatalagoGameWidget> {
               icon: Icon(Icons.exit_to_app),
               onPressed: () {
                 ApiBanco.logout();
-                Navigator.pop(context, true);
+                Navigator.popUntil(
+                  context,
+                  ModalRoute.withName('/login'),
+                );
               })
         ],
       ),

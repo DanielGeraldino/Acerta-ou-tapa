@@ -1,4 +1,6 @@
 import 'package:acerta_ou_tapa/utilities/api_banco.dart';
+import 'package:acerta_ou_tapa/utilities/button_login.dart';
+import 'package:acerta_ou_tapa/utilities/text_input_login.dart';
 import 'package:flutter/material.dart';
 import 'package:toast/toast.dart';
 
@@ -10,6 +12,8 @@ class LoginWidget extends StatefulWidget {
 class _LoginWidgetState extends State<LoginWidget> {
   TextEditingController controllerUsuario;
   TextEditingController controllerSenha;
+  final focusNodeUsuario = FocusNode();
+  final focusNodeSenha = FocusNode();
 
   @override
   void initState() {
@@ -27,46 +31,46 @@ class _LoginWidgetState extends State<LoginWidget> {
 
   @override
   Widget build(BuildContext context) {
+    var size = MediaQuery.of(context).size;
     return MaterialApp(
       home: Scaffold(
         backgroundColor: Colors.white,
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Image.asset(
-              'images/logo.jpg',
-              height: 150,
-            ),
-            Container(
-              margin: EdgeInsets.only(left: 30, right: 30, top: 20, bottom: 20),
-              child: TextFormField(
-                decoration: const InputDecoration(
-                  icon: Icon(Icons.person_rounded),
-                  hintText: 'Digite seu usuario',
-                  labelText: 'Digite seu usuario',
-                ),
-                controller: controllerUsuario,
+        body: Container(
+          alignment: Alignment.center,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset(
+                'images/logo.jpg',
+                height: 200,
               ),
-            ),
-            Container(
-              margin: EdgeInsets.only(left: 30, right: 30, top: 0, bottom: 20),
-              child: TextFormField(
-                decoration: const InputDecoration(
-                  icon: Icon(Icons.lock_clock),
-                  hintText: 'Digite sua senha',
-                  labelText: 'Digite sua senha',
-                ),
+              TextInputLogin(
+                size: size,
+                controller: controllerUsuario,
+                focusNode: focusNodeUsuario,
+                nextFocusNode: focusNodeSenha,
+                hintText: 'Digite seu usuario',
+                labelText: 'Digite seu usuario',
+                icon: Icon(Icons.person_rounded),
+                obscureText: false,
+              ),
+              SizedBox(height: 20),
+              TextInputLogin(
                 controller: controllerSenha,
+                focusNode: focusNodeSenha,
+                nextFocusNode: null,
+                size: size,
+                hintText: "Digite sua senha",
+                labelText: 'Digite sua senha',
+                icon: Icon(Icons.lock_clock),
                 obscureText: true,
               ),
-            ),
-            Container(
-              margin: EdgeInsets.only(left: 30, right: 30, top: 0, bottom: 20),
-              child: ElevatedButton(
-                child: Text('ENTRAR'),
+              SizedBox(height: 20),
+              ButtonLogin(
+                width: size.width * .8,
+                height: size.height * .05,
+                title: 'ENTRAR',
                 onPressed: () async {
-                  //Teste conecção
                   ApiBanco.setUsuario(controllerUsuario.text);
                   ApiBanco.setSenha(controllerSenha.text);
                   await ApiBanco.setToken();
@@ -77,9 +81,8 @@ class _LoginWidgetState extends State<LoginWidget> {
                   }
                 },
               ),
-            ),
-            Text('Novo jogador? click para criar conta.'),
-          ],
+            ],
+          ),
         ),
       ),
     );
