@@ -9,6 +9,7 @@ class TextInputLogin extends StatelessWidget {
   String labelText;
   Size size;
   bool obscureText;
+  TextInputAction textInputAction;
 
   TextInputLogin({
     @required this.controller,
@@ -19,6 +20,7 @@ class TextInputLogin extends StatelessWidget {
     @required this.labelText,
     @required this.icon,
     @required this.obscureText,
+    this.textInputAction = TextInputAction.next,
   });
 
   @override
@@ -39,6 +41,7 @@ class TextInputLogin extends StatelessWidget {
       ),
       // margin: EdgeInsets.only(left: 30, right: 30, top: 20, bottom: 20),
       child: TextFormField(
+        textInputAction: textInputAction,
         obscureText: obscureText,
         decoration: InputDecoration(
           icon: Padding(

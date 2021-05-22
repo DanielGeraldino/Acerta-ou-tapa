@@ -15,6 +15,21 @@ class _LoginWidgetState extends State<LoginWidget> {
   final focusNodeUsuario = FocusNode();
   final focusNodeSenha = FocusNode();
 
+  Future<bool> autenticar(BuildContext context) async {
+    if (controllerUsuario.text.isNotEmpty && controllerSenha.text.isNotEmpty) {
+      ApiBanco.setUsuario(controllerUsuario.text);
+      ApiBanco.setSenha(controllerSenha.text);
+      await ApiBanco.setToken();
+      if (ApiBanco.status) {
+        Navigator.pushNamed(context, '/catalago');
+      } else {
+        Toast.show('FAVOR VERIFICAR SENHA', context);
+      }
+    } else {
+      Toast.show('FAVOR PREENCHER OS CAMPOS', context);
+    }
+  }
+
   @override
   void initState() {
     controllerUsuario = TextEditingController();
@@ -64,6 +79,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                 labelText: 'Digite sua senha',
                 icon: Icon(Icons.lock_clock),
                 obscureText: true,
+                textInputAction: TextInputAction.done,
               ),
               SizedBox(height: 20),
               ButtonLogin(
@@ -71,14 +87,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                 height: size.height * .05,
                 title: 'ENTRAR',
                 onPressed: () async {
-                  ApiBanco.setUsuario(controllerUsuario.text);
-                  ApiBanco.setSenha(controllerSenha.text);
-                  await ApiBanco.setToken();
-                  if (ApiBanco.status) {
-                    Navigator.pushNamed(context, '/catalago');
-                  } else {
-                    Toast.show('FAVOR VERIFICAR SENHA', context);
-                  }
+                  await autenticar(context);
                 },
               ),
             ],

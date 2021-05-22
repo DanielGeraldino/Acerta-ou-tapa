@@ -1,5 +1,6 @@
 import 'package:acerta_ou_tapa/model/pergunta.dart';
 import 'package:acerta_ou_tapa/pagina/card_game.dart';
+import 'package:acerta_ou_tapa/utilities/AlertDialogBluetooth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
@@ -39,32 +40,9 @@ class _CatalagoGameWidgetState extends State<CatalagoGameWidget> {
     });
   }
 
-  @override
-  void initState() {
-    super.initState();
-    //Busca categorias na api
-    atualizaCategorias();
-
-    FlutterBluetoothSerial.instance.state.then((state) {
-      setState(() {
-        _bluetoothState = state;
-      });
-    });
-
-    _deviceState = 0;
-
-    habilitaBluetooth();
-
-    FlutterBluetoothSerial.instance
-        .onStateChanged()
-        .listen((BluetoothState state) {
-      setState(() {
-        _bluetoothState = state;
-        if (_bluetoothState == BluetoothState.STATE_OFF) {
-          _isButtonUnavailable = true;
-        }
-        getDispositivosPareados();
-      });
+  void setDevice(BluetoothDevice device) {
+    setState(() {
+      _device = device;
     });
   }
 
@@ -101,6 +79,7 @@ class _CatalagoGameWidgetState extends State<CatalagoGameWidget> {
       _isButtonUnavailable = true;
       _deviceState = 0;
     });
+    setDevice(null);
 
     await connection.close();
     // show('Device disconnected');
@@ -131,11 +110,54 @@ class _CatalagoGameWidgetState extends State<CatalagoGameWidget> {
     return items;
   }
 
+  void mostrarDispositivos(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext builder) => AlertDialogBluetooth(
+        // deviceSelecionado: _device,
+        listaDispositivo: _devicesList,
+        setDevoceSelecionado: setDevice,
+        eventoConectar: () {
+          Navigator.pop(context);
+        },
+      ),
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    //Busca categorias na api
+    atualizaCategorias();
+
+    FlutterBluetoothSerial.instance.state.then((state) {
+      setState(() {
+        _bluetoothState = state;
+      });
+    });
+
+    _deviceState = 0;
+
+    habilitaBluetooth();
+
+    FlutterBluetoothSerial.instance
+        .onStateChanged()
+        .listen((BluetoothState state) {
+      setState(() {
+        _bluetoothState = state;
+        if (_bluetoothState == BluetoothState.STATE_OFF) {
+          _isButtonUnavailable = true;
+        }
+        getDispositivosPareados();
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Acerta ou leva tapa'),
+        title: Text('Acerta ou Leva Tapa'),
         automaticallyImplyLeading: false,
         actions: [
           IconButton(
@@ -151,65 +173,82 @@ class _CatalagoGameWidgetState extends State<CatalagoGameWidget> {
       ),
       body: ListView(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(5),
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
                   children: [
-                    Text(
-                      "Habilitar Bluetooth",
-                      style: TextStyle(fontSize: 18),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Habilitar Bluetooth",
+                          style: TextStyle(fontSize: 18),
+                        ),
+                        Switch(
+                          value: _bluetoothState.isEnabled,
+                          onChanged: (value) {
+                            future() async {
+                              if (value) {
+                                await FlutterBluetoothSerial.instance
+                                    .requestEnable();
+                                await getDispositivosPareados();
+                                mostrarDispositivos(context);
+                              } else {
+                                await FlutterBluetoothSerial.instance
+                                    .requestDisable();
+                                setDevice(null);
+                              }
+
+                              _isButtonUnavailable = false;
+
+                              if (_connected) {
+                                _disconnect();
+                              }
+                            }
+
+                            future().then((_) {
+                              setState(() {});
+                            });
+                          },
+                        )
+                      ],
                     ),
-                    Switch(
-                      value: _bluetoothState.isEnabled,
-                      onChanged: (value) {
-                        future() async {
-                          if (value) {
-                            await FlutterBluetoothSerial.instance
-                                .requestEnable();
-                          } else {
-                            await FlutterBluetoothSerial.instance
-                                .requestDisable();
-                          }
-
-                          await getDispositivosPareados();
-                          _isButtonUnavailable = false;
-
-                          if (_connected) {
-                            _disconnect();
-                          }
-                        }
-
-                        future().then((_) {
-                          setState(() {});
-                        });
-                      },
-                    ),
+                    _device != null
+                        ? Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text("Dispositivo: ",
+                                  style: TextStyle(fontSize: 18)),
+                              Text('${_device.name}',
+                                  style: TextStyle(fontSize: 18))
+                            ],
+                          )
+                        : Text(""),
                   ],
                 ),
-                Row(
-                  children: [
-                    Text(
-                      'Selecionar dispositivo',
-                      style: TextStyle(fontSize: 18),
-                    ),
-                    DropdownButton(
-                      items: _getDeviceItem(),
-                      value: _devicesList.isEmpty ? _device : null,
-                      elevation: 16,
-                      onChanged: (value) {
-                        setState(() {
-                          print(value.name);
-                          _device = value;
-                        });
-                      },
-                    ),
-                  ],
-                ),
-              ],
-            ),
+              ),
+              // Row(
+              //   children: [
+              //     Text(
+              //       'Selecionar dispositivo',
+              //       style: TextStyle(fontSize: 18),
+              //     ),
+              //     DropdownButton(
+              //       items: _getDeviceItem(),
+              //       value: _devicesList.isEmpty ? _device : null,
+              //       elevation: 16,
+              //       onChanged: (value) {
+              //         setState(() {
+              //           print(value.name);
+              //           _device = value;
+              //         });
+              //       },
+              //     ),
+              //   ],
+              // ),
+            ],
           ),
           for (var i in categorias)
             if (i['nome'] != null && i['descricao'] != null)
