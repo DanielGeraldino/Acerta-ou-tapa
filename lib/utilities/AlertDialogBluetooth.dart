@@ -5,6 +5,7 @@ class AlertDialogBluetooth extends StatefulWidget {
   List<BluetoothDevice> listaDispositivo;
   BluetoothDevice deviceSelecionado;
   void Function(BluetoothDevice) setDevoceSelecionado;
+  void Function() connectDevice;
   BluetoothDevice Function() eventoConectar;
 
   AlertDialogBluetooth({
@@ -12,6 +13,7 @@ class AlertDialogBluetooth extends StatefulWidget {
     this.listaDispositivo,
     this.deviceSelecionado,
     this.eventoConectar,
+    this.connectDevice,
   });
 
   @override
@@ -44,14 +46,20 @@ class _AlertDialogBluetoothState extends State<AlertDialogBluetooth> {
                 ),
             if (widget.deviceSelecionado != null)
               Text('Selecionado: ${widget.deviceSelecionado.name}'),
-            ElevatedButton(
-                onPressed: () {
-                  if (widget.deviceSelecionado != null) {
-                    widget.eventoConectar();
-                    widget.setDevoceSelecionado(widget.deviceSelecionado);
-                  }
-                },
-                child: Text('CONECTAR')),
+            Align(
+              alignment: Alignment.bottomRight,
+              child: ElevatedButton(
+                  onPressed: () {
+                    if (widget.deviceSelecionado != null) {
+                      widget.eventoConectar();
+                      widget.setDevoceSelecionado(widget.deviceSelecionado);
+                      widget.connectDevice();
+                      return widget.deviceSelecionado;
+                    }
+                    return null;
+                  },
+                  child: Text('SELECIONAR')),
+            ),
           ],
         ),
       ),
