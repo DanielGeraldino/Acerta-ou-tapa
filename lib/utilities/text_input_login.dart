@@ -27,6 +27,7 @@ class TextInputLogin extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: size.width * .8,
+      margin: EdgeInsets.only(bottom: 10),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),

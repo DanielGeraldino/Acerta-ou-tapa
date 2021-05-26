@@ -17,11 +17,10 @@ class _LoginWidgetState extends State<LoginWidget> {
 
   Future<bool> autenticar(BuildContext context) async {
     if (controllerUsuario.text.isNotEmpty && controllerSenha.text.isNotEmpty) {
-      ApiBanco.setUsuario(controllerUsuario.text);
-      ApiBanco.setSenha(controllerSenha.text);
-      await ApiBanco.setToken();
+      ApiBanco.criarUsuario(controllerUsuario.text, controllerSenha.text);
+      await ApiBanco.auth();
       if (ApiBanco.status) {
-        Navigator.pushNamed(context, '/catalago');
+        Navigator.pushNamed(context, '/home');
       } else {
         Toast.show('FAVOR VERIFICAR SENHA', context);
       }
@@ -49,14 +48,12 @@ class _LoginWidgetState extends State<LoginWidget> {
     var size = MediaQuery.of(context).size;
     return MaterialApp(
       home: Scaffold(
-        backgroundColor: Colors.white,
-        body: Container(
-          alignment: Alignment.center,
+        body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Image.asset(
-                'images/logo.jpg',
+                'images/logo.png',
                 height: 200,
               ),
               TextInputLogin(
@@ -69,7 +66,6 @@ class _LoginWidgetState extends State<LoginWidget> {
                 icon: Icon(Icons.person_rounded),
                 obscureText: false,
               ),
-              SizedBox(height: 20),
               TextInputLogin(
                 controller: controllerSenha,
                 focusNode: focusNodeSenha,
@@ -81,7 +77,6 @@ class _LoginWidgetState extends State<LoginWidget> {
                 obscureText: true,
                 textInputAction: TextInputAction.done,
               ),
-              SizedBox(height: 20),
               ButtonLogin(
                 width: size.width * .8,
                 height: size.height * .05,

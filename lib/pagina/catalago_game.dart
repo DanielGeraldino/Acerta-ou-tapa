@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:acerta_ou_tapa/model/partida.dart';
 import 'package:acerta_ou_tapa/model/pergunta.dart';
 import 'package:acerta_ou_tapa/pagina/card_game.dart';
 import 'package:acerta_ou_tapa/utilities/AlertDialogBluetooth.dart';
@@ -256,11 +257,17 @@ class _CatalagoGameWidgetState extends State<CatalagoGameWidget> {
               CardGameWidget(
                 i['nome'],
                 i['descricao'],
-                () => Navigator.pushNamed(
-                  context,
-                  '/game',
-                  arguments: i['idCategoria'] as int,
-                ),
+                () async {
+                  Partida partida = await ApiBanco.iniciarPartida();
+                  if (partida != null) {
+                    partida.idCategoriaPerguntas = i['idCategoria'];
+                    Navigator.pushNamed(
+                      context,
+                      '/game',
+                      arguments: partida,
+                    );
+                  }
+                },
               ),
         ],
       ),
