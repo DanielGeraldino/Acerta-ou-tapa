@@ -1,5 +1,6 @@
 import 'package:acerta_ou_tapa/utilities/api_banco.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 class AcessaPatida extends StatelessWidget {
   final controleText = TextEditingController();
@@ -35,13 +36,15 @@ class AcessaPatida extends StatelessWidget {
                   onPressed: () async {
                     var id = controleText.text;
                     if (id.isNotEmpty) {
-                      print(id);
-                      if (await ApiBanco.adicionarJogadorPartida(
-                          int.parse(id))) {
-                        Navigator.pushNamed(context, '/game');
-                      }
-                    } else {
-                      print('[acessa partida] id vazio');
+                      EasyLoading.show(status: 'Entrando na partida');
+                      await ApiBanco.adicionarJogadorPartida(int.parse(id))
+                          .then((partida) {
+                        if (partida != null) {
+                          Navigator.pushNamed(context, '/game',
+                              arguments: partida);
+                          EasyLoading.showSuccess('Sucesso');
+                        }
+                      });
                     }
                   },
                 ),

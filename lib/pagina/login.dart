@@ -2,6 +2,7 @@ import 'package:acerta_ou_tapa/utilities/api_banco.dart';
 import 'package:acerta_ou_tapa/utilities/button_login.dart';
 import 'package:acerta_ou_tapa/utilities/text_input_login.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:toast/toast.dart';
 
 class LoginWidget extends StatefulWidget {
@@ -17,13 +18,16 @@ class _LoginWidgetState extends State<LoginWidget> {
 
   Future<bool> autenticar(BuildContext context) async {
     if (controllerUsuario.text.isNotEmpty && controllerSenha.text.isNotEmpty) {
+      EasyLoading.show(status: 'Autenticando usuário');
       ApiBanco.criarUsuario(controllerUsuario.text, controllerSenha.text);
-      await ApiBanco.auth();
-      if (ApiBanco.status) {
-        Navigator.pushNamed(context, '/home');
-      } else {
-        Toast.show('FAVOR VERIFICAR SENHA', context);
-      }
+      await ApiBanco.auth().then((value) {
+        if (value) {
+          EasyLoading.showSuccess('Sucesso!')
+              .whenComplete(() => Navigator.pushNamed(context, '/home'));
+        } else {
+          EasyLoading.showError('Login ou senha invalida');
+        }
+      });
     } else {
       Toast.show('FAVOR PREENCHER OS CAMPOS', context);
     }
@@ -33,6 +37,7 @@ class _LoginWidgetState extends State<LoginWidget> {
   void initState() {
     controllerUsuario = TextEditingController();
     controllerSenha = TextEditingController();
+    EasyLoading.instance..indicatorType = EasyLoadingIndicatorType.pulse;
     super.initState();
   }
 

@@ -5,6 +5,7 @@ import 'package:acerta_ou_tapa/pagina/game.dart';
 import 'package:acerta_ou_tapa/pagina/login.dart';
 import 'package:acerta_ou_tapa/pagina/home.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 main() => runApp(TapaNaCara());
 
@@ -18,6 +19,7 @@ class TapaNaCara extends StatelessWidget {
         primaryColor: Colors.blue,
         accentColor: Colors.blue,
       ),
+      builder: EasyLoading.init(),
       initialRoute: '/login',
       routes: {
         '/login': (context) => LoginWidget(),

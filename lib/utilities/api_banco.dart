@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:html';
 import 'package:acerta_ou_tapa/model/partida.dart';
 import 'package:acerta_ou_tapa/model/usuario.dart';
 
@@ -59,6 +60,9 @@ class ApiBanco {
   static Future<List> getCategorias() async {
     var client = http.Client();
     try {
+      print('[Buscar categoria] inicializando...');
+      print(
+          '[Buscar categoria] http get ${_getUri('categoria/?pagina=1&quantidade=5')}...');
       var uriReponse = await client.get(
         _getUri('categoria/?pagina=1&quantidade=5'),
         headers: <String, String>{
@@ -66,12 +70,15 @@ class ApiBanco {
           'Content-Type': 'application/json; charset=UTF-8',
         },
       );
+      print('[Buscar categoria] http status ${uriReponse.statusCode}');
       if (uriReponse.statusCode == 200) {
         var dado = json.decode(uriReponse.body);
+        print('[Buscar categoria] retornando lista categoria...');
         return dado['objectsReturn'];
       }
       return null;
     } finally {
+      print('[Buscar categoria] finalizando get categorias...');
       client.close();
     }
   }
@@ -79,6 +86,9 @@ class ApiBanco {
   static Future<List> getPergunta(int idCategoria) async {
     var client = http.Client();
     try {
+      print('[Buscar pergunta] inicializando...');
+      print(
+          '[Buscar pergunta] http get ${_getUri('pergunta?idCategoria=$idCategoria')}');
       var uriReponse = await client.get(
         _getUri('pergunta?idCategoria=$idCategoria'),
         headers: <String, String>{
@@ -86,12 +96,14 @@ class ApiBanco {
           'Content-Type': 'application/json; charset=UTF-8',
         },
       );
+      print('[Buscar pergunta] http status ${uriReponse.statusCode}');
       if (uriReponse.statusCode == 200) {
         var dado = json.decode(uriReponse.body);
         return dado['objectsReturn'];
       }
       return null;
     } finally {
+      print('[Buscar pergunta] finalizando...');
       client.close();
     }
   }
@@ -99,6 +111,8 @@ class ApiBanco {
   static Future<bool> validarRespota(int idEnuciado, int idOpacao) async {
     var client = http.Client();
     try {
+      print('[validar resposta] inicilaizado...');
+      print('[Validar resposta] http post ${_getUri("pergunta")}...');
       var uriReponse = await client.post(
         _getUri('pergunta'),
         body: jsonEncode({
@@ -110,17 +124,19 @@ class ApiBanco {
           'Content-Type': 'application/json; charset=UTF-8',
         },
       );
+      print('[validar resposta] http status ${uriReponse.statusCode}');
       if (uriReponse.statusCode == 200) {
         var dado = json.decode(uriReponse.body);
         return dado['objectsReturn'];
       }
       return false;
     } finally {
+      print('[validar reposta] finalizando...');
       client.close();
     }
   }
 
-  static Future<bool> adicionarJogadorPartida(int idPartida) async {
+  static Future<Partida> adicionarJogadorPartida(int idPartida) async {
     var client = http.Client();
     try {
       print(
@@ -139,16 +155,20 @@ class ApiBanco {
       print('[Adicionar jogagador] http status ${uriReponse.statusCode}');
       if (uriReponse.statusCode == 200) {
         var dado = json.decode(uriReponse.body);
+        Partida partida;
         if (dado['status'] = true) {
           print('[Adicionar jogagador] validado api ${uriReponse.statusCode}');
           var jogador = dado['objectsReturn']['infoJogador'];
           _usuario.infoJogador.pontuacao = jogador['porntuacao'];
           _usuario.infoJogador.qtdTapaDado = jogador['qtdTapaDado'];
           _usuario.infoJogador.qtdTapaRecebido = jogador['qtdTapaRecebido'];
+
+          partida =
+              Partida(id: idPartida, ativa: dado['objectsReturn']['ativa']);
         }
-        return dado['status'];
+        return partida;
       }
-      return false;
+      return null;
     } finally {
       print('[Adicionar jogagador] finalizando...');
       client.close();
