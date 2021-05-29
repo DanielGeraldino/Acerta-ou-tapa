@@ -8,6 +8,7 @@ import 'package:acerta_ou_tapa/utilities/AlertDialogBluetooth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
+import 'package:provider/provider.dart';
 
 import '../utilities/api_banco.dart';
 
@@ -144,25 +145,25 @@ class _CatalagoGameWidgetState extends State<CatalagoGameWidget> {
     //Busca categorias na api
     atualizaCategorias();
 
-    FlutterBluetoothSerial.instance.state.then((state) {
-      setState(() {
-        _bluetoothState = state;
-      });
-    });
+    // FlutterBluetoothSerial.instance.state.then((state) {
+    //   setState(() {
+    //     _bluetoothState = state;
+    //   });
+    // });
 
-    // habilitaBluetooth();
+    // // habilitaBluetooth();
 
-    FlutterBluetoothSerial.instance
-        .onStateChanged()
-        .listen((BluetoothState state) {
-      setState(() {
-        _bluetoothState = state;
-        if (_bluetoothState == BluetoothState.STATE_OFF) {
-          _isButtonUnavailable = true;
-        }
-        getDispositivosPareados();
-      });
-    });
+    // FlutterBluetoothSerial.instance
+    //     .onStateChanged()
+    //     .listen((BluetoothState state) {
+    //   setState(() {
+    //     _bluetoothState = state;
+    //     if (_bluetoothState == BluetoothState.STATE_OFF) {
+    //       _isButtonUnavailable = true;
+    //     }
+    //     getDispositivosPareados();
+    //   });
+    // });
   }
 
   @override
@@ -258,9 +259,10 @@ class _CatalagoGameWidgetState extends State<CatalagoGameWidget> {
                 i['nome'],
                 i['descricao'],
                 () async {
-                  Partida partida = await ApiBanco.iniciarPartida();
+                  Partida partida =
+                      await ApiBanco.iniciarPartida(i['idCategoria']);
+                  partida.idCategoriaPerguntas = i['idCategoria'];
                   if (partida != null) {
-                    partida.idCategoriaPerguntas = i['idCategoria'];
                     Navigator.pushNamed(
                       context,
                       '/game',

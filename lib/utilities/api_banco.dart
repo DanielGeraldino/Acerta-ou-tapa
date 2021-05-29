@@ -46,6 +46,7 @@ class ApiBanco {
         if (status == true) {
           _usuario.token = dado['objectsReturn']['token'];
           _usuario.id = dado['objectsReturn']['idUser'];
+          print(_usuario.token);
           print('[auntenticação] guardando token e id do usuario');
         }
         return status;
@@ -83,14 +84,16 @@ class ApiBanco {
     }
   }
 
-  static Future<List> getPergunta(int idCategoria) async {
+  static Future<List> getPergunta(
+      int idPartida, int idCategoriaPerguntas) async {
     var client = http.Client();
     try {
       print('[Buscar pergunta] inicializando...');
       print(
-          '[Buscar pergunta] http get ${_getUri('pergunta?idCategoria=$idCategoria')}');
+          '[Buscar pergunta] http get ${_getUri('pergunta?idCategoria=1&idUsuario=${_usuario.id}&idPartida=$idPartida')}');
       var uriReponse = await client.get(
-        _getUri('pergunta?idCategoria=$idCategoria'),
+        _getUri(
+            'pergunta?idCategoria=1&idUsuario=${_usuario.id}&idPartida=$idPartida'),
         headers: <String, String>{
           'Authorization': 'Bearer ${_usuario.token}',
           'Content-Type': 'application/json; charset=UTF-8',
@@ -99,11 +102,47 @@ class ApiBanco {
       print('[Buscar pergunta] http status ${uriReponse.statusCode}');
       if (uriReponse.statusCode == 200) {
         var dado = json.decode(uriReponse.body);
+        // print(dado);
         return dado['objectsReturn'];
       }
       return null;
     } finally {
       print('[Buscar pergunta] finalizando...');
+      client.close();
+    }
+  }
+
+  static Future<bool> validarRespota2(
+      int idEnuciado, int idOpacao, int idPartida) async {
+    var client = http.Client();
+    try {
+      print('[validar resposta] inicilaizado...');
+      print(
+          '[Validar resposta] http post https://perguntasocoapi.azurewebsites.net/api/pergunta...');
+      print('$idEnuciado - $idOpacao - ${_usuario.id} - $idPartida');
+      var uriReponse = await client.post(
+        Uri.parse('https://perguntasocoapi.azurewebsites.net/api/pergunta'),
+        body: jsonEncode({
+          "idEnunciado": idEnuciado,
+          "idOpcao": idOpacao,
+          "idUsuario": _usuario.id,
+          "idPartida": idPartida,
+        }),
+        headers: <String, String>{
+          'Authorization': 'Bearer ${_usuario.token}',
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+      );
+      print('[validar resposta] http status ${uriReponse.statusCode}');
+      if (uriReponse.statusCode == 200) {
+        var dado = json.decode(uriReponse.body);
+        print(
+            'resposta: ${dado['objectsReturn']['infoPergunta']['respostaJogadorCorreta']}');
+        return dado['objectsReturn']['infoPergunta']['respostaJogadorCorreta'];
+      }
+      return false;
+    } finally {
+      print('[validar reposta] finalizando...');
       client.close();
     }
   }
@@ -127,7 +166,8 @@ class ApiBanco {
       print('[validar resposta] http status ${uriReponse.statusCode}');
       if (uriReponse.statusCode == 200) {
         var dado = json.decode(uriReponse.body);
-        return dado['objectsReturn'];
+        print(dado['objectsReturn']['infoPergunta']['respostaJogador']);
+        return dado['objectsReturn']['infoPergunta']['respostaJogador'];
       }
       return false;
     } finally {
@@ -140,33 +180,38 @@ class ApiBanco {
     var client = http.Client();
     try {
       print(
-          '[Adicionar jogagador] post: ${_getUri('iniciar-jogo/AdicionarJogador')}...');
+          '[Adicionar jogagador] post: ${_getUri('inicio/iniciar-jogo/AdicionarJogador')}...');
       var uriReponse = await client.post(
-        _getUri('iniciar-jogo/AdicionarJogador'),
+        Uri.parse(
+            'https://perguntasocoapi.azurewebsites.net/api/inicio/adicionar-jogador'),
         body: jsonEncode({
           "idUsuario": _usuario.id,
           "idPartida": idPartida,
         }),
         headers: <String, String>{
-          // 'Authorization': 'Bearer ${_usuario.token}',
+          'Authorization': 'Bearer ${_usuario.token}',
           'Content-Type': 'application/json; charset=UTF-8',
         },
       );
       print('[Adicionar jogagador] http status ${uriReponse.statusCode}');
       if (uriReponse.statusCode == 200) {
         var dado = json.decode(uriReponse.body);
-        Partida partida;
-        if (dado['status'] = true) {
+        print(dado);
+        if (dado['objectsReturn']['ativa'] = true) {
           print('[Adicionar jogagador] validado api ${uriReponse.statusCode}');
           var jogador = dado['objectsReturn']['infoJogador'];
           _usuario.infoJogador.pontuacao = jogador['porntuacao'];
           _usuario.infoJogador.qtdTapaDado = jogador['qtdTapaDado'];
           _usuario.infoJogador.qtdTapaRecebido = jogador['qtdTapaRecebido'];
-
-          partida =
-              Partida(id: idPartida, ativa: dado['objectsReturn']['ativa']);
+          Partida partida = Partida(
+            id: idPartida,
+            ativa: dado['objectsReturn']['ativa'],
+            idCategoriaPerguntas: dado['objectsReturn']['infoPergunta']
+                ['idCategoria'],
+          );
+          print(partida.idCategoriaPerguntas);
+          return partida;
         }
-        return partida;
       }
       return null;
     } finally {
@@ -175,13 +220,18 @@ class ApiBanco {
     }
   }
 
-  static Future<Partida> iniciarPartida() async {
+  static Future<Partida> iniciarPartida(int idCategoria) async {
     var client = http.Client();
     try {
-      print('[iniciar jogo] post: ${_getUri('iniciar-jogo')}...');
+      print(
+          '[iniciar jogo] post: https://perguntasocoapi.azurewebsites.net/api/inicio/iniciar-jogo?idUsuario=${_usuario.id}&idCategoria=$idCategoria...');
       var uriReponse = await client.post(
         Uri.parse(
-            'https://perguntasocoapi.azurewebsites.net/api​/iniciar-jogo'),
+            'https://perguntasocoapi.azurewebsites.net/api/inicio/iniciar-jogo?idUsuario=${_usuario.id}&idCategoria=$idCategoria'),
+        headers: <String, String>{
+          'Authorization': 'Bearer ${_usuario.token}',
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
       );
       print('[iniciar jogo] http status ${uriReponse.statusCode}');
       if (uriReponse.statusCode == 200) {
@@ -200,6 +250,77 @@ class ApiBanco {
       return null;
     } finally {
       print('[iniciar partida] finalizando post...');
+      client.close();
+    }
+  }
+
+  static Future<bool> verificarAdversarioAcertou() async {
+    // Imprementar a rota para verificar se adversario acertou
+    await Future.delayed(Duration(seconds: 5));
+    return true;
+  }
+
+  static Future<bool> vericarVez(int idPartida) async {
+    var client = http.Client();
+    try {
+      print(
+          '[verifica vez] get: https://perguntasocoapi.azurewebsites.net/api/pergunta/semaforo/verifica-vez-resposta?idUsuario=${_usuario.id}&idPartida=$idPartida..');
+      var uriReponse = await client.get(
+        Uri.parse(
+            'https://perguntasocoapi.azurewebsites.net/api/pergunta/semaforo/verifica-vez-resposta?idUsuario=${_usuario.id}&idPartida=$idPartida'),
+      );
+      print('[verificar vez] http status ${uriReponse.statusCode}');
+      print('[verificar vez] validado api ${uriReponse.statusCode}');
+      if (uriReponse.statusCode == 200) {
+        var dado = json.decode(uriReponse.body);
+        return dado['objectsReturn']['infoJogador']['vezResponder'];
+      }
+      return false;
+    } finally {
+      print('[iniciar partida] finalizando post...');
+      client.close();
+    }
+  }
+
+  static Future<bool> verificarPartidaAtiva(int idPartida) async {
+    var client = http.Client();
+    try {
+      print(
+          '[verifica vez] get: https://perguntasocoapi.azurewebsites.net/api/pergunta/semaforo/verifica-partida-ativa?idPartida=$idPartida..');
+      var uriReponse = await client.get(
+        Uri.parse(
+            'https://perguntasocoapi.azurewebsites.net/api/pergunta/semaforo/verifica-partida-ativa?idPartida=$idPartida'),
+      );
+      print('[verificar ativa] http status ${uriReponse.statusCode}');
+      print('[verificar ativa] validado api ${uriReponse.statusCode}');
+      if (uriReponse.statusCode == 200) {
+        var dado = json.decode(uriReponse.body);
+        return dado['objectsReturn']['ativa'];
+      }
+      return false;
+    } finally {
+      print('[iniciar partida] finalizando post...');
+      client.close();
+    }
+  }
+
+  static Future<bool> finalizarPartida(int idPartida) async {
+    var client = http.Client();
+    try {
+      print(
+          '[finalizar partida] get: https://perguntasocoapi.azurewebsites.net/api/pergunta/semaforo/finaliza-partida?idPartida=$idPartida...');
+      var uriReponse = await client.get(
+        Uri.parse(
+            'https://perguntasocoapi.azurewebsites.net/api/pergunta/semaforo/finaliza-partida?idPartida=$idPartida'),
+      );
+      print('[finalizar partida] http status ${uriReponse.statusCode}');
+      if (uriReponse.statusCode == 200) {
+        var dado = json.decode(uriReponse.body);
+        return dado['status'];
+      }
+      return false;
+    } finally {
+      print('[finalizar partida] finalizando post...');
       client.close();
     }
   }

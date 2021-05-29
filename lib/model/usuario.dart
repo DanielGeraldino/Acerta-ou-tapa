@@ -1,5 +1,4 @@
 import 'package:acerta_ou_tapa/model/info_jogador.dart';
-import 'package:flutter/cupertino.dart';
 
 class Usuario {
   int _id;

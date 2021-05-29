@@ -6,6 +6,7 @@ class Pergunta {
   final idEnuciado;
   final idCategoria;
   final idOpacaoCorreta;
+  bool acertou = false;
   int idPeguntaSelecionada;
   List<Resposta> respostas;
 

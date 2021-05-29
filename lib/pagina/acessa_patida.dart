@@ -43,7 +43,11 @@ class AcessaPatida extends StatelessWidget {
                           Navigator.pushNamed(context, '/game',
                               arguments: partida);
                           EasyLoading.showSuccess('Sucesso');
+                        } else {
+                          EasyLoading.showError('Falha ao carregar');
                         }
+                      }).catchError((onError) {
+                        EasyLoading.showError('Falha ao entrar na partida');
                       });
                     }
                   },

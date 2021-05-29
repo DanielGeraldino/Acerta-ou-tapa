@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+@immutable
 class CardGameWidget extends StatelessWidget {
   String _title;
   String _subtitle;

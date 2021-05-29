@@ -1,3 +1,4 @@
+import 'package:acerta_ou_tapa/model/partida.dart';
 import 'package:acerta_ou_tapa/pagina/acessa_patida.dart';
 import 'package:acerta_ou_tapa/pagina/catalago_game.dart';
 import 'package:acerta_ou_tapa/pagina/final_game.dart';
@@ -21,13 +22,30 @@ class TapaNaCara extends StatelessWidget {
       ),
       builder: EasyLoading.init(),
       initialRoute: '/login',
+
+      // home: LoginWidget(),
       routes: {
-        '/login': (context) => LoginWidget(),
-        '/home': (context) => HomePage(),
-        '/acessa_partida': (context) => AcessaPatida(),
+        '/login': (BuildContext context) => LoginWidget(),
+        '/home': (BuildContext context) => HomePage(),
+        '/acessa_partida': (BuildContext context) => AcessaPatida(),
         '/catalago': (BuildContext context) => CatalagoGameWidget(),
-        '/game': (BuildContext context) => GameWidget(),
+        // '/game': (BuildContext context) => GameWidget(settings.arguments),
         '/game_final': (BuildContext context) => GameFinalizaWidget(),
+      },
+      onGenerateRoute: (settings) {
+        var routes = {
+          '/login': (BuildContext context) => LoginWidget(),
+          '/home': (BuildContext context) => HomePage(),
+          '/acessa_partida': (BuildContext context) => AcessaPatida(),
+          '/catalago': (BuildContext context) => CatalagoGameWidget(),
+          '/game': (BuildContext context) => GameWidget(settings.arguments),
+          '/game_final': (BuildContext context) => GameFinalizaWidget(),
+        };
+
+        if (settings.name == '/game') {
+          WidgetBuilder builder = routes[settings.name];
+          return MaterialPageRoute(builder: (context) => builder(context));
+        }
       },
     );
   }
