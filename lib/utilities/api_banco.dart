@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:html';
 import 'package:acerta_ou_tapa/model/partida.dart';
 import 'package:acerta_ou_tapa/model/usuario.dart';
 

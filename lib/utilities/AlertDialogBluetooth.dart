@@ -4,12 +4,12 @@ import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 class AlertDialogBluetooth extends StatefulWidget {
   List<BluetoothDevice> listaDispositivo;
   BluetoothDevice deviceSelecionado;
-  void Function(BluetoothDevice) setDevoceSelecionado;
+  void Function(BluetoothDevice) setDeviceSelecionado;
   void Function() connectDevice;
   BluetoothDevice Function() eventoConectar;
 
   AlertDialogBluetooth({
-    this.setDevoceSelecionado,
+    this.setDeviceSelecionado,
     this.listaDispositivo,
     this.deviceSelecionado,
     this.eventoConectar,
@@ -52,7 +52,7 @@ class _AlertDialogBluetoothState extends State<AlertDialogBluetooth> {
                   onPressed: () {
                     if (widget.deviceSelecionado != null) {
                       widget.eventoConectar();
-                      widget.setDevoceSelecionado(widget.deviceSelecionado);
+                      widget.setDeviceSelecionado(widget.deviceSelecionado);
                       widget.connectDevice();
                       return widget.deviceSelecionado;
                     }

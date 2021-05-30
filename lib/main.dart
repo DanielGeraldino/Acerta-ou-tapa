@@ -1,14 +1,20 @@
-import 'package:acerta_ou_tapa/model/partida.dart';
 import 'package:acerta_ou_tapa/pagina/acessa_patida.dart';
 import 'package:acerta_ou_tapa/pagina/catalago_game.dart';
 import 'package:acerta_ou_tapa/pagina/final_game.dart';
 import 'package:acerta_ou_tapa/pagina/game.dart';
 import 'package:acerta_ou_tapa/pagina/login.dart';
 import 'package:acerta_ou_tapa/pagina/home.dart';
+import 'package:acerta_ou_tapa/utilities/Bluetooth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:provider/provider.dart';
 
-main() => runApp(TapaNaCara());
+main() => runApp(
+      ChangeNotifierProvider(
+        create: (context) => Bluetooth(),
+        child: TapaNaCara(),
+      ),
+    );
 
 class TapaNaCara extends StatelessWidget {
   @override

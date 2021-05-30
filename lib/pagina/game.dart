@@ -22,6 +22,7 @@ class _GameWidgetState extends State<GameWidget> {
   // Partida partida = Partida(ativa: true, id: 105, idCategoriaPerguntas: 1);
 
   List<Pergunta> _perguntas = [];
+  int qtdPerguntas = 0;
   Pergunta _perguntaAtual;
   var opcaoSelecionado = 0;
   Color corButtonEnviar = Colors.blue;
@@ -30,6 +31,7 @@ class _GameWidgetState extends State<GameWidget> {
   bool mostrarResposta = false;
   bool acertou = false;
   bool adversarioAcertou = false;
+  bool minhaVez = false;
   int qtdTapaDado = 0;
   int qtdTapaRecebido = 0;
 
@@ -64,7 +66,7 @@ class _GameWidgetState extends State<GameWidget> {
     return auxResp;
   }
 
-  Future<void> _proximaPegunta(int idPartida, int idCategoriaPerguntas) async {
+  _proximaPegunta(int idPartida, int idCategoriaPerguntas) async {
     var auxPerguta =
         await ApiBanco.getPergunta(idPartida, idCategoriaPerguntas);
     List<Resposta> respostas = _tratarResposta(auxPerguta[0]['listaOpcoes']);
@@ -107,6 +109,7 @@ class _GameWidgetState extends State<GameWidget> {
     EasyLoading.showSuccess(
       'Acertou: $acertou',
     );
+    qtdPerguntas++;
     setStatusButtonEnviar();
     await Future.delayed(Duration(seconds: 2));
   }
@@ -130,6 +133,7 @@ class _GameWidgetState extends State<GameWidget> {
   }
 
   void fecharPartida() {
+    partidaAtiva = false;
     ApiBanco.finalizarPartida(partida().id);
     Navigator.popUntil(context, ModalRoute.withName('/home'));
   }
@@ -145,28 +149,35 @@ class _GameWidgetState extends State<GameWidget> {
   }
 
   @override
-  void dispose() {
-    super.dispose();
-  }
-
-  @override
   Future<void> initState() {
     super.initState();
     // EasyLoading.show(status: 'Carregando partida...');
     _proximaPegunta(partida().id, partida().idCategoriaPerguntas);
+    verificarVez();
+  }
+
+  Future<void> verificarVez() {
+    Future.doWhile(() async {
+      var auxMinhaVez = await ApiBanco.vericarVez(partida().id);
+
+      setState(() {
+        minhaVez = auxMinhaVez;
+      });
+
+      await Future.delayed(Duration(seconds: 10));
+      return partidaAtiva;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_perguntaAtual == null)
-      _proximaPegunta(partida().id, partida().idCategoriaPerguntas);
     return Scaffold(
       appBar: AppBar(
         title: Text(
             'Partida atual ${partida().id} - Jogador ${ApiBanco.usuario().nome}'),
         automaticallyImplyLeading: false,
       ),
-      body: _perguntas.length <= 3 && _perguntaAtual != null
+      body: qtdPerguntas <= 3 && _perguntaAtual != null
           ? Padding(
               padding: const EdgeInsets.all(15.0),
               child: ListView(
@@ -202,7 +213,7 @@ class _GameWidgetState extends State<GameWidget> {
                     ),
                   Container(
                     margin: EdgeInsets.only(
-                        left: 30, right: 30, top: 0, bottom: 20),
+                        left: 10, right: 10, top: 0, bottom: 20),
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(primary: corButtonEnviar),
                       child: Text('$textoButtonEnviar'),
@@ -223,7 +234,7 @@ class _GameWidgetState extends State<GameWidget> {
                   if (mostrarResposta)
                     Container(
                       margin: EdgeInsets.only(
-                          left: 30, right: 30, top: 0, bottom: 20),
+                          left: 10, right: 10, top: 0, bottom: 20),
                       child: ElevatedButton(
                         child: Text('PROXIMA QUESTÃO'),
                         onPressed: () async {
@@ -234,6 +245,7 @@ class _GameWidgetState extends State<GameWidget> {
                         },
                       ),
                     ),
+                  Text('$minhaVez'),
                 ],
               ),
             )
