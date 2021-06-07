@@ -4,10 +4,12 @@ import 'package:acerta_ou_tapa/model/partida.dart';
 import 'package:acerta_ou_tapa/model/pergunta.dart';
 import 'package:acerta_ou_tapa/model/resposta.dart';
 import 'package:acerta_ou_tapa/utilities/api_banco.dart';
+import 'package:acerta_ou_tapa/utilities/bluetooth.dart';
 import 'package:acerta_ou_tapa/utilities/radio_resposta.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:provider/provider.dart';
 
 class GameWidget extends StatefulWidget {
   Partida _partida;
@@ -21,10 +23,12 @@ class GameWidget extends StatefulWidget {
 class _GameWidgetState extends State<GameWidget> {
   // Partida partida = Partida(ativa: true, id: 105, idCategoriaPerguntas: 1);
 
+  Bluetooth controleBlue;
+
   List<Pergunta> _perguntas = [];
   int qtdPerguntas = 0;
   Pergunta _perguntaAtual;
-  var opcaoSelecionado = 0;
+  var opcaoSelecionado = -1;
   Color corButtonEnviar = Colors.blue;
   String textoButtonEnviar;
   bool partidaAtiva = true;
@@ -34,6 +38,7 @@ class _GameWidgetState extends State<GameWidget> {
   bool minhaVez = false;
   int qtdTapaDado = 0;
   int qtdTapaRecebido = 0;
+  bool isClickTapa = false;
 
   Partida partida() => widget._partida;
 
@@ -139,6 +144,7 @@ class _GameWidgetState extends State<GameWidget> {
   }
 
   void darTapa() {
+    controleBlue.sendOnMessageToBluetooth();
     qtdTapaDado++;
     print('Deu tapa');
   }
@@ -164,13 +170,14 @@ class _GameWidgetState extends State<GameWidget> {
         minhaVez = auxMinhaVez;
       });
 
-      await Future.delayed(Duration(seconds: 10));
+      await Future.delayed(Duration(seconds: 5));
       return partidaAtiva;
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    controleBlue = Provider.of<Bluetooth>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -219,14 +226,24 @@ class _GameWidgetState extends State<GameWidget> {
                       child: Text('$textoButtonEnviar'),
                       onPressed: () async {
                         if (!mostrarResposta) {
-                          await validandoPergunta();
-                          await verificarValidacaoAdversario();
+                          if (opcaoSelecionado != -1) {
+                            if (minhaVez) {
+                              await validandoPergunta();
+                            } else {
+                              EasyLoading.showInfo(
+                                  'Liberando sua vez. Tente novamente...');
+                            }
+                          } else {
+                            EasyLoading.showInfo('Selecione um opção');
+                          }
+                          // await verificarValidacaoAdversario();
                         } else {
                           if (acertou) {
                             darTapa();
                           } else {
                             levarTapa();
                           }
+                          isClickTapa = true;
                         }
                       },
                     ),
@@ -236,16 +253,19 @@ class _GameWidgetState extends State<GameWidget> {
                       margin: EdgeInsets.only(
                           left: 10, right: 10, top: 0, bottom: 20),
                       child: ElevatedButton(
-                        child: Text('PROXIMA QUESTÃO'),
-                        onPressed: () async {
-                          if (mostrarResposta) {
-                            _proximaPegunta(
-                                partida().id, partida().idCategoriaPerguntas);
-                          }
-                        },
-                      ),
+                          child: Text('PROXIMA QUESTÃO'),
+                          onPressed: () async {
+                            if (!isClickTapa) {
+                              EasyLoading.showInfo(
+                                  'Use o botão de cima para o tapa');
+                            } else {
+                              _proximaPegunta(
+                                  partida().id, partida().idCategoriaPerguntas);
+                              isClickTapa = false;
+                              opcaoSelecionado = -1;
+                            }
+                          }),
                     ),
-                  Text('$minhaVez'),
                 ],
               ),
             )
