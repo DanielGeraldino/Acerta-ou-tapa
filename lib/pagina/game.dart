@@ -144,7 +144,7 @@ class _GameWidgetState extends State<GameWidget> {
   }
 
   void darTapa() {
-    controleBlue.sendOnMessageToBluetooth();
+    // controleBlue.sendOnMessageToBluetooth();
     qtdTapaDado++;
     print('Deu tapa');
   }
@@ -177,7 +177,7 @@ class _GameWidgetState extends State<GameWidget> {
 
   @override
   Widget build(BuildContext context) {
-    controleBlue = Provider.of<Bluetooth>(context);
+    // controleBlue = Provider.of<Bluetooth>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text(
