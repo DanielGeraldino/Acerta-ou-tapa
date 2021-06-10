@@ -181,122 +181,122 @@ class _GameWidgetState extends State<GameWidget> {
       EasyLoading.dismiss();
     }
     return Scaffold(
-        appBar: AppBar(
-          title: Text(
-              'Partida atual ${partida().id} - Jogador ${ApiBanco.usuario().nome}'),
-          automaticallyImplyLeading: false,
-        ),
-        body: qtdPerguntas <= 3 && _perguntaAtual != null
-            ? Padding(
-                padding: const EdgeInsets.all(15.0),
-                child: ListView(
-                  children: [
-                    Text(
-                      _perguntaAtual.enuciado,
-                      textAlign: TextAlign.justify,
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
+      appBar: AppBar(
+        title: Text(
+            'Partida atual ${partida().id} - Jogador ${ApiBanco.usuario().nome} - N° Pergunta ${qtdPerguntas + 1}'),
+        automaticallyImplyLeading: false,
+      ),
+      body: qtdPerguntas <= 3 && _perguntaAtual != null
+          ? Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: ListView(
+                children: [
+                  Text(
+                    _perguntaAtual.enuciado,
+                    textAlign: TextAlign.justify,
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
                     ),
-                    Padding(
-                        padding:
-                            EdgeInsets.symmetric(vertical: 15, horizontal: 0)),
-                    for (int i = 0; i < _perguntaAtual.respostas.length; i++)
-                      Row(
-                        children: [
-                          Expanded(
-                            child: RadioResposta(
-                              value: _perguntaAtual.respostas[i].idOpacao,
-                              groupValue: opcaoSelecionado,
-                              title: '${_perguntaAtual.respostas[i].descricao}',
-                              onChanged: (resp) {
-                                setState(() {
-                                  opcaoSelecionado = resp;
-                                  _perguntaAtual.idPeguntaSelecionada = resp;
-                                });
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                    Container(
-                      margin: EdgeInsets.only(
-                          left: 10, right: 10, top: 0, bottom: 20),
-                      child: ElevatedButton(
-                        style:
-                            ElevatedButton.styleFrom(primary: corButtonEnviar),
-                        child: Text('$textoButtonEnviar'),
-                        onPressed: () async {
-                          if (!mostrarResposta) {
-                            if (opcaoSelecionado != -1) {
-                              if (minhaVez) {
-                                await validandoPergunta();
-                              } else {
-                                EasyLoading.showInfo(
-                                    'Liberando sua vez. Tente novamente...');
-                              }
-                            } else {
-                              EasyLoading.showInfo('Selecione um opção');
-                            }
-                            // await verificarValidacaoAdversario();
-                          } else {
-                            if (acertou) {
-                              darTapa();
-                            } else {
-                              levarTapa();
-                            }
-                            isClickTapa = true;
-                          }
-                        },
-                      ),
-                    ),
-                    if (mostrarResposta)
-                      Container(
-                        margin: EdgeInsets.only(
-                            left: 10, right: 10, top: 0, bottom: 20),
-                        child: ElevatedButton(
-                            child: Text('PROXIMA QUESTÃO'),
-                            onPressed: () async {
-                              if (!isClickTapa) {
-                                EasyLoading.showInfo(
-                                    'Use o botão de cima para o tapa');
-                              } else {
-                                if (minhaVez) {
-                                  _proximaPegunta(partida().id,
-                                      partida().idCategoriaPerguntas);
-                                  isClickTapa = false;
-                                  opcaoSelecionado = -1;
-                                } else {
-                                  EasyLoading.showInfo(
-                                      'Esperando o adversario responder');
-                                }
-                              }
-                            }),
-                      ),
-                  ],
-                ),
-              )
-            : minhaVez
-                ? Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                  ),
+                  Padding(
+                      padding:
+                          EdgeInsets.symmetric(vertical: 15, horizontal: 0)),
+                  for (int i = 0; i < _perguntaAtual.respostas.length; i++)
+                    Row(
                       children: [
-                        Text(
-                            'Voce levo $qtdTapaRecebido tapas e deu $qtdTapaDado!'),
-                        Container(
-                          margin: EdgeInsets.only(
-                              left: 30, right: 30, top: 0, bottom: 20),
-                          child: ElevatedButton(
-                            child: Text('FINALIZAR PARTIDA'),
-                            onPressed: () {
-                              fecharPartida();
+                        Expanded(
+                          child: RadioResposta(
+                            value: _perguntaAtual.respostas[i].idOpacao,
+                            groupValue: opcaoSelecionado,
+                            title: '${_perguntaAtual.respostas[i].descricao}',
+                            onChanged: (resp) {
+                              setState(() {
+                                opcaoSelecionado = resp;
+                                _perguntaAtual.idPeguntaSelecionada = resp;
+                              });
                             },
                           ),
                         ),
                       ],
                     ),
-                  )
-                : Center());
+                  Container(
+                    margin: EdgeInsets.only(
+                        left: 10, right: 10, top: 0, bottom: 20),
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(primary: corButtonEnviar),
+                      child: Text('$textoButtonEnviar'),
+                      onPressed: () async {
+                        if (!mostrarResposta) {
+                          if (opcaoSelecionado != -1) {
+                            if (minhaVez) {
+                              await validandoPergunta();
+                            } else {
+                              EasyLoading.showInfo(
+                                  'Liberando sua vez. Tente novamente...');
+                            }
+                          } else {
+                            EasyLoading.showInfo('Selecione um opção');
+                          }
+                          // await verificarValidacaoAdversario();
+                        } else {
+                          if (acertou) {
+                            darTapa();
+                          } else {
+                            levarTapa();
+                          }
+                          isClickTapa = true;
+                        }
+                      },
+                    ),
+                  ),
+                  if (mostrarResposta)
+                    Container(
+                      margin: EdgeInsets.only(
+                          left: 10, right: 10, top: 0, bottom: 20),
+                      child: ElevatedButton(
+                          child: Text('PROXIMA QUESTÃO'),
+                          onPressed: () async {
+                            if (!isClickTapa) {
+                              EasyLoading.showInfo(
+                                  'Use o botão de cima para o tapa');
+                            } else {
+                              if (minhaVez) {
+                                _proximaPegunta(partida().id,
+                                    partida().idCategoriaPerguntas);
+                                isClickTapa = false;
+                                opcaoSelecionado = -1;
+                              } else {
+                                EasyLoading.showInfo(
+                                    'Esperando o adversario responder');
+                              }
+                            }
+                          }),
+                    ),
+                ],
+              ),
+            )
+          : minhaVez || qtdPerguntas == 3
+              ? Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                          'Voce levo $qtdTapaRecebido tapas e deu $qtdTapaDado!'),
+                      Container(
+                        margin: EdgeInsets.only(
+                            left: 30, right: 30, top: 0, bottom: 20),
+                        child: ElevatedButton(
+                          child: Text('FINALIZAR PARTIDA'),
+                          onPressed: () {
+                            fecharPartida();
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+              : Center(),
+    );
   }
 }
