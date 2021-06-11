@@ -144,14 +144,16 @@ class _GameWidgetState extends State<GameWidget> {
   }
 
   void darTapa() {
-    if (controleBlue.isConnected) {
-      controleBlue.sendOnMessageToBluetooth();
-    }
     qtdTapaDado++;
     print('Deu tapa');
   }
 
   void levarTapa() {
+    if (controleBlue != null) {
+      if (controleBlue.isConnected) {
+        controleBlue.sendOnMessageToBluetooth();
+      }
+    }
     qtdTapaRecebido++;
     print('levou tapa');
   }
@@ -184,8 +186,35 @@ class _GameWidgetState extends State<GameWidget> {
     }
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-            'Partida atual ${partida().id} - Jogador ${ApiBanco.usuario().nome} - N° Pergunta ${qtdPerguntas + 1}'),
+        title: Column(
+          children: [
+            Text('  Sala ${partida().id}', style: TextStyle(fontSize: 15)),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Row(
+                  children: [
+                    Text('Minha vez  '),
+                    CircleAvatar(
+                      radius: 7.0,
+                      backgroundColor: minhaVez ? Colors.green : Colors.red,
+                    ),
+                  ],
+                ),
+                RichText(
+                  text: TextSpan(
+                      style: TextStyle(color: Colors.white),
+                      text: 'Tapa Dado $qtdTapaDado x ',
+                      children: [
+                        TextSpan(
+                            text: '$qtdTapaRecebido Tapa Recebido',
+                            style: TextStyle(color: Colors.white))
+                      ]),
+                )
+              ],
+            ),
+          ],
+        ),
         automaticallyImplyLeading: false,
       ),
       body: qtdPerguntas <= 3 && _perguntaAtual != null
