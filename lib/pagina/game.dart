@@ -144,7 +144,9 @@ class _GameWidgetState extends State<GameWidget> {
   }
 
   void darTapa() {
-    // controleBlue.sendOnMessageToBluetooth();
+    if (controleBlue.isConnected) {
+      controleBlue.sendOnMessageToBluetooth();
+    }
     qtdTapaDado++;
     print('Deu tapa');
   }
