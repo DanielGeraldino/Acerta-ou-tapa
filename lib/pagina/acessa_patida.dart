@@ -26,7 +26,7 @@ class _AcessaPatidaState extends State<AcessaPatida> {
       setState(() {
         partidas = List.from(aux.reversed);
       });
-
+      await Future.delayed(Duration(seconds: 10));
       return !stopBuscarPartida;
     });
   }

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:acerta_ou_tapa/model/partida.dart';
 import 'package:acerta_ou_tapa/model/pergunta.dart';
 import 'package:acerta_ou_tapa/model/resposta.dart';
+import 'package:acerta_ou_tapa/pagina/chat.dart';
 import 'package:acerta_ou_tapa/utilities/api_banco.dart';
 import 'package:acerta_ou_tapa/utilities/bluetooth.dart';
 import 'package:acerta_ou_tapa/utilities/radio_resposta.dart';
@@ -304,6 +305,7 @@ class _GameWidgetState extends State<GameWidget> {
                             }
                           }),
                     ),
+                  ChatApp(),
                 ],
               ),
             )
