@@ -323,4 +323,38 @@ class ApiBanco {
       client.close();
     }
   }
+
+  static Future<List<Map<String, Object>>> getPartidasOnlie() async {
+    var client = http.Client();
+    try {
+      print(
+          '[BUSCAR PARTIDA] GET: https://perguntasocoapi.azurewebsites.net/api/inicio/listar-partidas');
+      var uriResponse = await client.get(Uri.parse(
+          'https://perguntasocoapi.azurewebsites.net/api/inicio/listar-partidas'));
+      print('[BUSCAR PARTIDA] STATUS: ${uriResponse.statusCode}');
+      if (uriResponse.statusCode == 200) {
+        var dado = json.decode(uriResponse.body);
+        List<Map<String, Object>> partidas = [];
+        for (var p in dado['objectsReturn']) {
+          partidas.add({
+            'id': p['idPartida'],
+            'nome': p['categoria'],
+            'quantidadeParticipantes': p['quantidadeParticipantes'],
+            'inicioPartida': p['inicioPartida'],
+          });
+        }
+        return partidas;
+      } else {
+        print('[BUSCAR PARTIDA] FALHA AO BUSCAR PARTIDA');
+        return null;
+      }
+    } finally {
+      print('[BUSCAR PARTIDA] FINALIZADO...');
+    }
+  }
+}
+
+main() async {
+  var partidasOnlie = ApiBanco.getPartidasOnlie();
+  print(partidasOnlie);
 }

@@ -1,61 +1,78 @@
 import 'package:acerta_ou_tapa/utilities/api_banco.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:provider/provider.dart';
 
-class AcessaPatida extends StatelessWidget {
+class AcessaPatida extends StatefulWidget {
+  @override
+  _AcessaPatidaState createState() => _AcessaPatidaState();
+}
+
+class _AcessaPatidaState extends State<AcessaPatida> {
   final controleText = TextEditingController();
+  bool stopBuscarPartida = false;
+
+  List<Map<String, Object>> partidas = [];
+
+  @override
+  void initState() {
+    super.initState();
+    buscarPartida();
+  }
+
+  buscarPartida() async {
+    Future.doWhile(() async {
+      var aux = await ApiBanco.getPartidasOnlie() as List<Map<String, Object>>;
+      setState(() {
+        partidas = List.from(aux.reversed);
+      });
+
+      return !stopBuscarPartida;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Acerta ou Leva Tapa'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                width: MediaQuery.of(context).size.width * .8,
-                child: TextFormField(
-                  controller: controleText,
-                  decoration: InputDecoration(
-                    hintText: 'Digite o ID da sala',
-                    labelText: 'Digite o ID da sala',
+      body: ListView(
+        children: [
+          for (var partida in partidas)
+            GestureDetector(
+              child: Card(
+                clipBehavior: Clip.antiAlias,
+                elevation: 3,
+                child: ListTile(
+                  title: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(partida['nome']),
+                      Text('Sala ${partida['id']}')
+                    ],
                   ),
+                  subtitle: Text(
+                      'Numero de jogadores: ${partida['quantidadeParticipantes']}'),
                 ),
               ),
-              SizedBox(
-                height: 50,
-              ),
-              Container(
-                width: MediaQuery.of(context).size.width * .8,
-                child: ElevatedButton(
-                  child: Text('ENTRAR'),
-                  onPressed: () async {
-                    var id = controleText.text;
-                    if (id.isNotEmpty) {
-                      EasyLoading.show(status: 'Entrando na partida');
-                      await ApiBanco.adicionarJogadorPartida(int.parse(id))
-                          .then((partida) {
-                        if (partida != null) {
-                          Navigator.pushNamed(context, '/game',
-                              arguments: partida);
-                          EasyLoading.showSuccess('Sucesso');
-                        } else {
-                          EasyLoading.showError('Falha ao carregar');
-                        }
-                      }).catchError((onError) {
-                        EasyLoading.showError('Falha ao entrar na partida');
-                      });
-                    }
-                  },
-                ),
-              )
-            ],
-          ),
-        ),
+              onTap: () async {
+                EasyLoading.show(status: 'Entrando na partida');
+                await ApiBanco.adicionarJogadorPartida(partida['id'])
+                    .then((partida) {
+                  if (partida != null) {
+                    stopBuscarPartida = true;
+                    Navigator.pushNamed(context, '/game', arguments: partida);
+                    EasyLoading.showSuccess('Sucesso');
+                  } else {
+                    EasyLoading.showError('Falha ao carregar');
+                  }
+                }).catchError((onError) {
+                  EasyLoading.showError('Falha ao entrar na partida');
+                });
+              },
+            )
+        ],
       ),
     );
   }
