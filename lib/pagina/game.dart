@@ -26,6 +26,7 @@ class _GameWidgetState extends State<GameWidget> {
 
   Bluetooth controleBlue;
 
+  int limetePerguntas = 3;
   List<Pergunta> _perguntas = [];
   int qtdPerguntas = 0;
   Pergunta _perguntaAtual;
@@ -108,6 +109,7 @@ class _GameWidgetState extends State<GameWidget> {
       partida().id,
     ).then((value) {
       setState(() {
+        minhaVez = false;
         acertou = value;
         mostrarResposta = true;
       });
@@ -115,9 +117,8 @@ class _GameWidgetState extends State<GameWidget> {
     EasyLoading.showSuccess(
       'Acertou: $acertou',
     );
-    qtdPerguntas++;
     setStatusButtonEnviar();
-    await Future.delayed(Duration(seconds: 2));
+    // await Future.delayed(Duration(seconds: 2));
   }
 
   Future<void> verificarValidacaoAdversario() async {
@@ -139,6 +140,7 @@ class _GameWidgetState extends State<GameWidget> {
   }
 
   void fecharPartida() {
+    EasyLoading.showInfo('Partida finalizada');
     partidaAtiva = false;
     ApiBanco.finalizarPartida(partida().id);
     Navigator.popUntil(context, ModalRoute.withName('/home'));
@@ -218,7 +220,7 @@ class _GameWidgetState extends State<GameWidget> {
         ),
         automaticallyImplyLeading: false,
       ),
-      body: qtdPerguntas <= 3 && _perguntaAtual != null
+      body: qtdPerguntas < limetePerguntas && _perguntaAtual != null
           ? Padding(
               padding: const EdgeInsets.all(15.0),
               child: ListView(
@@ -289,19 +291,27 @@ class _GameWidgetState extends State<GameWidget> {
                       child: ElevatedButton(
                           child: Text('PROXIMA QUESTÃO'),
                           onPressed: () async {
-                            if (!isClickTapa) {
-                              EasyLoading.showInfo(
-                                  'Use o botão de cima para o tapa');
-                            } else {
-                              if (minhaVez) {
-                                _proximaPegunta(partida().id,
-                                    partida().idCategoriaPerguntas);
-                                isClickTapa = false;
-                                opcaoSelecionado = -1;
-                              } else {
+                            var statusPartida =
+                                await ApiBanco.verificarPartidaAtiva(
+                                    partida().id);
+                            if (statusPartida) {
+                              if (!isClickTapa) {
                                 EasyLoading.showInfo(
-                                    'Esperando o adversario responder');
+                                    'Use o botão de cima para o tapa');
+                              } else {
+                                if (minhaVez) {
+                                  _proximaPegunta(partida().id,
+                                      partida().idCategoriaPerguntas);
+                                  isClickTapa = false;
+                                  opcaoSelecionado = -1;
+                                  qtdPerguntas++;
+                                } else {
+                                  EasyLoading.showInfo(
+                                      'Esperando o adversario responder');
+                                }
                               }
+                            } else {
+                              fecharPartida();
                             }
                           }),
                     ),
@@ -309,7 +319,7 @@ class _GameWidgetState extends State<GameWidget> {
                 ],
               ),
             )
-          : minhaVez || qtdPerguntas == 3
+          : minhaVez || qtdPerguntas <= limetePerguntas
               ? Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
