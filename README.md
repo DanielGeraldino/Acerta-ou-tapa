@@ -12,7 +12,7 @@ Utilizamos o Flutter para fazer aplicação mobile e C# (.NET) com Azure para AP
 ## Telas do Sistema:
 
 ### Login:
-![alt text](https://github.com/DanielGeraldino/Acerta-ou-tapa/blob/master/print_telas/login.jpg)
+![alt text](https://github.com/DanielGeraldino/Acerta-ou-tapa/blob/master/print_telas/login.jpg =250x)
 
 ### Home:
 ![alt text](https://github.com/DanielGeraldino/Acerta-ou-tapa/blob/master/print_telas/home.jpg)
