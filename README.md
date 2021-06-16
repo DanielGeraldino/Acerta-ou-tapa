@@ -12,16 +12,16 @@ Utilizamos o Flutter para fazer aplicação mobile e C# (.NET) com Azure para AP
 ## Telas do Sistema:
 
 ### Login:
-![alt text](print_telas/home.jgp)
+![alt text](https://github.com/DanielGeraldino/Acerta-ou-tapa/blob/master/print_telas/login.jpg)
 
 ### Home:
-![alt text](https://drive.google.com/file/d/1R9qktjLD_XpIuyANBRFOQ5dAgK1Bln2Q)
+![alt text](https://github.com/DanielGeraldino/Acerta-ou-tapa/blob/master/print_telas/home.jpg)
 
 ### Criando partida:
-![alt text](https://drive.google.com/file/d/1R8RzR6PFC-U-jCNp75V8-2aK0oI8Vzuj)
+![alt text](https://github.com/DanielGeraldino/Acerta-ou-tapa/blob/master/print_telas/catalago_games.jpg)
 
 ### Partida:
-![alt text](https://drive.google.com/file/d/1R6DW6at_UN8ZA3EVa30ydK6Twck60DWi)
+![alt text](https://github.com/DanielGeraldino/Acerta-ou-tapa/blob/master/print_telas/game2.jpg)
 
 ### Lista de salas:
-![alt text](https://drive.google.com/file/d/1QwKlRIRqhizx-ERuqQWvBof0m7CNTLzg)
+![alt text](https://github.com/DanielGeraldino/Acerta-ou-tapa/blob/master/print_telas/lista_salas.jpg)
