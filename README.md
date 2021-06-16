@@ -12,7 +12,7 @@ Utilizamos o Flutter para fazer aplicação mobile e C# (.NET) com Azure para AP
 ## Telas do Sistema:
 
 ### Login:
-![alt text](https://drive.google.com/file/d/1RCEAw6Ow0eX51e_WIgi957bDhZBW9ipk)
+![alt text](print_telas/home.jgp)
 
 ### Home:
 ![alt text](https://drive.google.com/file/d/1R9qktjLD_XpIuyANBRFOQ5dAgK1Bln2Q)
