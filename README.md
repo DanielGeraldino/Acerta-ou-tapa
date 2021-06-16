@@ -1,16 +1,27 @@
-# acerta_ou_tapa
+# Acerta ou Leva Tapa
 
-A new Flutter project.
+## Apresentação
 
-## Getting Started
+Nos últimos meses observamos que houve um distanciamento social em função da atual pandemia, portanto a Faculdade UCL propôs aos alunos desenvolver sistema de rede social que trabalhasse com sentido do tato. Assim nasce o Acerta ou leva tapa.
 
-This project is a starting point for a Flutter application.
+Nosso sistema tem objetivo de ligar duas pessoas para uma competição de perguntas, onde quando uma pessoa erra leva um tapa por um braço mecânico.
 
-A few resources to get you started if this is your first Flutter project:
+Desenvolvimento:
+Utilizamos o Flutter para fazer aplicação mobile e C# (.NET) com Azure para API. Já o braço foi feito com arduino e componentes eletrônicos para simular um tapa.
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+## Telas do Sistema:
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### Login:
+![alt text](https://drive.google.com/file/d/1RCEAw6Ow0eX51e_WIgi957bDhZBW9ipk)
+
+### Home:
+![alt text](https://drive.google.com/file/d/1R9qktjLD_XpIuyANBRFOQ5dAgK1Bln2Q)
+
+### Criando partida:
+![alt text](https://drive.google.com/file/d/1R8RzR6PFC-U-jCNp75V8-2aK0oI8Vzuj)
+
+### Partida:
+![alt text](https://drive.google.com/file/d/1R6DW6at_UN8ZA3EVa30ydK6Twck60DWi)
+
+### Lista de salas:
+![alt text](https://drive.google.com/file/d/1QwKlRIRqhizx-ERuqQWvBof0m7CNTLzg)
