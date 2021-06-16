@@ -31,8 +31,7 @@ Utilizamos o Flutter para fazer aplicação mobile e C# (.NET) com Azure para AP
 <img src="https://github.com/DanielGeraldino/Acerta-ou-tapa/blob/master/print_telas/lista_salas.jpg" width="200">
 <!-- ![alt text](https://github.com/DanielGeraldino/Acerta-ou-tapa/blob/master/print_telas/lista_salas.jpg) -->
 
-## Video do praço:
-<video width="320" height="240" controls>
-  <source src="https://github.com/DanielGeraldino/Acerta-ou-tapa/blob/master/print_telas/teste_app.mp4" type="video/mp4">
-</video>
+## Video do braço:
+
+![](https://github.com/DanielGeraldino/Acerta-ou-tapa/blob/master/print_telas/teste_app.mp4)
 
