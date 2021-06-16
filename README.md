@@ -16,13 +16,23 @@ Utilizamos o Flutter para fazer aplicação mobile e C# (.NET) com Azure para AP
 <!-- ![alt text](https://github.com/DanielGeraldino/Acerta-ou-tapa/blob/master/print_telas/login.jpg) -->
 
 ### Home:
-![alt text](https://github.com/DanielGeraldino/Acerta-ou-tapa/blob/master/print_telas/home.jpg)
+<img src="https://github.com/DanielGeraldino/Acerta-ou-tapa/blob/master/print_telas/home.jpg" width="200">
+<!-- ![alt text](https://github.com/DanielGeraldino/Acerta-ou-tapa/blob/master/print_telas/home.jpg) -->
 
 ### Criando partida:
-![alt text](https://github.com/DanielGeraldino/Acerta-ou-tapa/blob/master/print_telas/catalago_games.jpg)
+<img src="https://github.com/DanielGeraldino/Acerta-ou-tapa/blob/master/print_telas/catalago_games.jpg" width="200">
+<!-- ![alt text](https://github.com/DanielGeraldino/Acerta-ou-tapa/blob/master/print_telas/catalago_games.jpg) -->
 
 ### Partida:
-![alt text](https://github.com/DanielGeraldino/Acerta-ou-tapa/blob/master/print_telas/game2.jpg)
+<img src="https://github.com/DanielGeraldino/Acerta-ou-tapa/blob/master/print_telas/game2.jpg" width="200">
+<!-- ![alt text](https://github.com/DanielGeraldino/Acerta-ou-tapa/blob/master/print_telas/game2.jpg) -->
 
 ### Lista de salas:
-![alt text](https://github.com/DanielGeraldino/Acerta-ou-tapa/blob/master/print_telas/lista_salas.jpg)
+<img src="https://github.com/DanielGeraldino/Acerta-ou-tapa/blob/master/print_telas/lista_salas.jpg" width="200">
+<!-- ![alt text](https://github.com/DanielGeraldino/Acerta-ou-tapa/blob/master/print_telas/lista_salas.jpg) -->
+
+## Video do praço:
+<video width="320" height="240" controls>
+  <source src="https://github.com/DanielGeraldino/Acerta-ou-tapa/blob/master/print_telas/teste_app.mp4" type="video/mp4">
+</video>
+
