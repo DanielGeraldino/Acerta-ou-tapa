@@ -352,9 +352,91 @@ class ApiBanco {
       print('[BUSCAR PARTIDA] FINALIZADO...');
     }
   }
+
+  static Future<bool> enviarMensagem(String msg, int idPartida) async {
+    var client = http.Client();
+    try {
+      print(
+          '[ENVIAR MENSAGEM] GET: https://perguntasocoapi.azurewebsites.net/api/chat/enviar');
+      var uriResponse = await client.post(
+        Uri.parse('https://perguntasocoapi.azurewebsites.net/api/chat/enviar'),
+        body: jsonEncode(
+          {
+            "idPartida": idPartida,
+            "idUsuario": usuario().id,
+            "mensagem": msg,
+            "destinatario": false,
+            "remetente": true,
+            "statusChatDTO": {"enviado": true}
+          },
+        ),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+      );
+      print('[ENVIAR MENSAGEM] STATUS: ${uriResponse.statusCode}');
+      if (uriResponse.statusCode == 200) {
+        var dado = json.decode(uriResponse.body);
+
+        return dado['status'];
+      } else {
+        print('[ENVIAR MENSAGEM] FALHA AO BUSCAR PARTIDA');
+        return false;
+      }
+    } finally {
+      print('[ENVIAR MENSAGEM] FINALIZADO...');
+    }
+  }
+
+  static Future<List<Map<String, Object>>> recebeMensagens(
+      int idPartida) async {
+    var client = http.Client();
+
+    try {
+      print(
+          '[ENVIAR RECEBER] GET: https://perguntasocoapi.azurewebsites.net/api/chat/receber');
+      var uriResponse = await client.post(
+        Uri.parse('https://perguntasocoapi.azurewebsites.net/api/chat/receber'),
+        body: jsonEncode(
+          {
+            "idPartida": idPartida,
+            "idUsuario": usuario().id,
+            "mensagem": '',
+            "destinatario": true,
+            "remetente": false,
+            "statusChatDTO": {"enviado": true}
+          },
+        ),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+      );
+      print('[ENVIAR RECEBER] STATUS: ${uriResponse.statusCode}');
+      if (uriResponse.statusCode == 200) {
+        var dado = json.decode(uriResponse.body);
+        List<Map<String, Object>> listaMensagem = [];
+        dado['objectsReturn'].forEach((msg) {
+          listaMensagem.add(
+            {
+              'idPartida': msg['idPartida'],
+              'idUsuario': msg['idUsuario'],
+              'mensagem': msg['mensagem'],
+              'dataHora': msg['dataHoraEnvio'],
+            },
+          );
+        });
+        return listaMensagem;
+      } else {
+        print('[ENVIAR RECEBER] FALHA AO BUSCAR PARTIDA');
+        return null;
+      }
+    } finally {
+      print('[ENVIAR RECEBER] FINALIZADO...');
+    }
+  }
 }
 
-main() async {
-  var partidasOnlie = ApiBanco.getPartidasOnlie();
-  print(partidasOnlie);
-}
+// main() async {
+//   var partidasOnlie = ApiBanco.getPartidasOnlie();
+//   print(partidasOnlie);
+// }

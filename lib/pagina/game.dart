@@ -315,7 +315,9 @@ class _GameWidgetState extends State<GameWidget> {
                             }
                           }),
                     ),
-                  ChatApp(),
+                  ChatApp(
+                    idPartida: partida().id,
+                  ),
                 ],
               ),
             )

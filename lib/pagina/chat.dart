@@ -3,7 +3,12 @@ import 'package:chat_list/chat_list.dart';
 import 'package:flutter/material.dart';
 
 class ChatApp extends StatefulWidget {
-  const ChatApp({Key key}) : super(key: key);
+  final idPartida;
+
+  ChatApp({
+    Key key,
+    this.idPartida,
+  }) : super(key: key);
 
   @override
   _ChatAppState createState() => _ChatAppState();
@@ -11,6 +16,7 @@ class ChatApp extends StatefulWidget {
 
 class _ChatAppState extends State<ChatApp> {
   final List<Message> mensagens = [];
+  bool _ativo = true;
 
   final TextEditingController controllerText = TextEditingController();
   final ScrollController controllerScrollMessage = ScrollController();
@@ -30,7 +36,6 @@ class _ChatAppState extends State<ChatApp> {
   }) {
     if (mensagem.isNotEmpty) {
       setState(() {
-        controllerText.text = '';
         mensagens.add(Message(
           ownerName: autor,
           ownerType: tipo,
@@ -42,10 +47,40 @@ class _ChatAppState extends State<ChatApp> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    Future.doWhile(() async {
+      List<Map<String, Object>> mensagensApi =
+          await ApiBanco.recebeMensagens(widget.idPartida);
+      if (mensagensApi.isNotEmpty) {
+        mensagens.clear();
+        mensagensApi.forEach((element) {
+          addMensagem(
+            mensagem: element['mensagem'],
+            autor: '{$element["idUsuario"]}',
+            tipo: element['idUsuario'] == ApiBanco.usuario().id
+                ? OwnerType.sender
+                : OwnerType.receiver,
+          );
+        });
+      }
+
+      await Future.delayed(Duration(seconds: 5));
+      return _ativo;
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _ativo = false;
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
       child: Container(
-        height: MediaQuery.of(context).size.height * .2,
+        height: MediaQuery.of(context).size.height * .4,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -59,18 +94,25 @@ class _ChatAppState extends State<ChatApp> {
               child: TextField(
                 controller: controllerText,
                 decoration: InputDecoration(
-                    hintText: 'Entre com a mensagem',
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        Icons.send,
-                        color: Colors.blue,
-                      ),
-                      onPressed: () => addMensagem(
+                  hintText: 'Entre com a mensagem',
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      Icons.send,
+                      color: Colors.blue,
+                    ),
+                    onPressed: () async {
+                      await ApiBanco.enviarMensagem(
+                          controllerText.text, widget.idPartida);
+                      addMensagem(
                         mensagem: controllerText.text,
                         autor: ApiBanco.usuario().nome,
                         tipo: OwnerType.sender,
-                      ),
-                    )),
+                      );
+
+                      controllerText.text = '';
+                    },
+                  ),
+                ),
               ),
             )
           ],
