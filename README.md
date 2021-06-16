@@ -33,5 +33,5 @@ Utilizamos o Flutter para fazer aplicação mobile e C# (.NET) com Azure para AP
 
 ## Video do braço:
 
-![](https://github.com/DanielGeraldino/Acerta-ou-tapa/blob/master/print_telas/teste_app.mp4)
+https://github.com/DanielGeraldino/Acerta-ou-tapa/blob/master/print_telas/teste_app.mp4
 
